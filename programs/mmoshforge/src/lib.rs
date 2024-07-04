@@ -13,12 +13,18 @@ pub mod error;
 pub mod other_states;
 pub mod utils;
 
+pub mod vault;
+pub mod launchpass;
+
 use _main::*;
 use activation_token::*;
 use collection_factory::*;
 use other_states::LineageInfo;
 use profile::*;
 use curve::*;
+
+use vault::*;
+use launchpass::*;
 
 #[program]
 pub mod mmoshforge {
@@ -226,6 +232,18 @@ pub mod mmoshforge {
     
       pub fn sell_native_v0(ctx: Context<SellNativeV0>, args: SellV0Args) -> Result<()> {
         curve::instructions::sell::sell_native_v0::handler(ctx, args)
+      }
+
+      pub fn init_vault(ctx: Context<InitVault>, lock_date: u64) -> Result<()> {
+         vault::instructions::init_vault(ctx, lock_date)
+      }
+
+      pub fn stake_vault(ctx: Context<StakeVault>, value: u64) -> Result<()> {
+        vault::instructions::stake_vault(ctx, value)
+      }
+
+      pub fn unstake_vault(ctx: Context<UnstakeVault>, value: u64) -> Result<()> {
+        vault::instructions::unstake_vault(ctx, value)
       }
 
 }

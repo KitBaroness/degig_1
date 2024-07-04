@@ -34,4 +34,7 @@ pub enum MyError {
 
     #[msg("Profile ID missmatch")]
     ProfileIdMissMatch,
+
+    #[msg("Token locked time not expired")]
+    TimeLockNotExpired,
 }
