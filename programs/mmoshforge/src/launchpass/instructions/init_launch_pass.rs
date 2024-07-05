@@ -14,6 +14,7 @@ use crate::{constants::SEED_LAUNCH_PASS, launchpass::LaunchPassState, other_stat
 pub fn init_launch_pass(
     ctx: Context<InitLaunchPass>,
     usdc: Pubkey,
+    redeem_amount: u64,
     redeem_date: u64,
     cost: u64,
     distribution: MintingCostDistribution,
@@ -27,6 +28,7 @@ pub fn init_launch_pass(
         launch_pass.mint = ctx.accounts.mint.key();
         launch_pass.usdc = usdc.key();
         launch_pass.redeem_date = redeem_date;
+        launch_pass.redeem_amount = redeem_amount;
         launch_pass.distribution = distribution;
         launch_pass.cost = cost;
         launch_pass._bump = ctx.bumps.launch_pass;

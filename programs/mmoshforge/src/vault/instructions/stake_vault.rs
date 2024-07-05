@@ -18,21 +18,21 @@ pub struct StakeVault<'info> {
     #[account(
         mut,
     )]
-    pub seller: Signer<'info>,
+    pub owner: Signer<'info>,
 
     #[account(
         mut,
         token::mint = mint,
-        token::authority = seller
+        token::authority = owner
     )]
-    pub seller_ata: Box<Account<'info, TokenAccount>>,
+    pub owner_ata: Box<Account<'info, TokenAccount>>,
 
     #[account()]
     pub mint: Box<Account<'info, Mint>>,
 
     #[account(
         mut,
-        seeds = [SEED_VAULT, seller.key().as_ref() ,mint.key().as_ref()],
+        seeds = [SEED_VAULT, owner.key().as_ref() ,mint.key().as_ref()],
         bump,
     )]
     pub vault: Box<Account<'info, VaultState>>,
@@ -52,9 +52,9 @@ pub struct StakeVault<'info> {
 impl<'info> StakeVault<'info> {
     pub fn init_stake_vault(&self, value: u64) -> Result<()> {
         transfer_tokens(
-            self.seller_ata.to_account_info(),
+            self.owner_ata.to_account_info(),
             self.token_account.to_account_info(),
-            self.seller.to_account_info(),
+            self.owner.to_account_info(),
             self.token_program.to_account_info(),
             value
         )?;

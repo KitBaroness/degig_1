@@ -54,6 +54,7 @@ pub fn buy_launch_pass(ctx: Context<BuyLaunchPass>) -> Result<()> {
     let grand_parent_cost = (cost as u128 * minting_cost_distribution.grand_parent as u128
             / TOTAL_SELLER_BASIS_POINTS as u128) as u64;
 
+    // parent
     transfer_tokens(
         sender_ata.to_account_info(),
         ctx.accounts
@@ -106,6 +107,13 @@ pub struct BuyLaunchPass<'info> {
     ///CHECK:
     pub owner: AccountInfo<'info>,
 
+    #[account(
+        mut,
+        seeds = [SEED_LAUNCH_PASS, owner.key().as_ref() ,mint.key().as_ref()],
+        bump,
+    )]
+    pub launc_pass_state: Box<Account<'info, LaunchPassState>>,
+
     ///CHECK:
     #[account(
         mut,
@@ -122,16 +130,10 @@ pub struct BuyLaunchPass<'info> {
 
     #[account(
         mut,
-        seeds = [SEED_LAUNCH_PASS, owner.key().as_ref() ,mint.key().as_ref()],
-        bump,
-    )]
-    pub launc_pass_state: Box<Account<'info, LaunchPassState>>,
-
-    #[account(
-        mut,
     )]
     pub mint: Box<Account<'info, Mint>>,
 
+    ///CHECK:
     #[account(address = launc_pass_state.usdc)]
     pub usdc_mint: AccountInfo<'info>,
 

@@ -25,6 +25,7 @@ use curve::*;
 
 use vault::*;
 use launchpass::*;
+use other_states::MintingCostDistribution;
 
 #[program]
 pub mod mmoshforge {
@@ -234,8 +235,8 @@ pub mod mmoshforge {
         curve::instructions::sell::sell_native_v0::handler(ctx, args)
       }
 
-      pub fn init_vault(ctx: Context<InitVault>, lock_date: u64) -> Result<()> {
-         vault::instructions::init_vault(ctx, lock_date)
+      pub fn init_vault(ctx: Context<InitVault>, lock_date: u64, receiver: Pubkey) -> Result<()> {
+         vault::instructions::init_vault(ctx, lock_date, receiver)
       }
 
       pub fn stake_vault(ctx: Context<StakeVault>, value: u64) -> Result<()> {
@@ -245,5 +246,32 @@ pub mod mmoshforge {
       pub fn unstake_vault(ctx: Context<UnstakeVault>, value: u64) -> Result<()> {
         vault::instructions::unstake_vault(ctx, value)
       }
+
+      pub fn init_launch_pass(
+        ctx: Context<InitLaunchPass>, 
+        usdc: Pubkey,
+        redeem_amount: u64,
+        redeem_date: u64,
+        cost: u64,
+        distribution: MintingCostDistribution,
+        name: String,
+        symbol: String,
+        uri: String
+      ) -> Result<()> {
+        launchpass::instructions::init_launch_pass(ctx, usdc, redeem_amount, redeem_date, cost, distribution, name, symbol, uri)
+     }
+
+     pub fn buy_launch_pass(
+      ctx: Context<BuyLaunchPass>, 
+     ) -> Result<()> {
+      launchpass::instructions::buy_launch_pass(ctx)
+     }
+
+
+     pub fn redeem_launch_pass(
+      ctx: Context<RedeemLaunchPass>, 
+     ) -> Result<()> {
+      launchpass::instructions::redeem_launch_pass(ctx)
+     }
 
 }

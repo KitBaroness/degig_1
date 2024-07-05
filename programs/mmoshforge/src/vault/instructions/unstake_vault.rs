@@ -19,20 +19,24 @@ pub struct UnstakeVault<'info> {
     #[account(
         mut,
     )]
-    pub seller: Signer<'info>,
+    pub receiver: Signer<'info>,
 
     #[account(
         mut,
         token::mint = mint,
+        constraint = receiver_ata.owner == vault.authority
     )]
-    pub seller_ata: Box<Account<'info, TokenAccount>>,
+    pub receiver_ata: Box<Account<'info, TokenAccount>>,
 
     #[account()]
     pub mint: Box<Account<'info, Mint>>,
 
+    ///CHECK:
+    pub owner: AccountInfo<'info>,
+
     #[account(
         mut,
-        seeds = [SEED_VAULT, seller.key().as_ref() ,mint.key().as_ref()],
+        seeds = [SEED_VAULT, owner.key().as_ref() ,mint.key().as_ref()],
         bump
     )]
     pub vault: Box<Account<'info, VaultState>>,
@@ -41,7 +45,7 @@ pub struct UnstakeVault<'info> {
         mut,
         associated_token::mint = mint, // mint of the token
         associated_token::authority = vault, //authority that should be a PDA account
-        constraint = vault.authority.key() == seller.key() @ MyError::OnlyOwnerCanCall,
+        constraint = vault.authority.key() == receiver.key() @ MyError::OnlyOwnerCanCall,
     )]
     token_account: Account<'info, TokenAccount>,
     pub associated_token_program: Program<'info, AssociatedToken>,
@@ -60,12 +64,12 @@ impl<'info> UnstakeVault<'info> {
             from: self
             .token_account
             .to_account_info(),
-            to: self.seller_ata.to_account_info(),
+            to: self.receiver_ata.to_account_info(),
             authority: self
             .vault
             .to_account_info()
         };
-        token::transfer(CpiContext::new(self.token_program.to_account_info(), cpi_accounts).with_signer(&[&[SEED_VAULT, self.seller.key().as_ref() ,self.mint.key().as_ref(), &[self.vault._bump]]]), value)?;
+        token::transfer(CpiContext::new(self.token_program.to_account_info(), cpi_accounts).with_signer(&[&[SEED_VAULT, self.owner.key().as_ref() ,self.mint.key().as_ref(), &[self.vault._bump]]]), value)?;
         Ok(())
     }
 }
