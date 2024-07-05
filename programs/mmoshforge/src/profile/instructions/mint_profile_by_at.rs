@@ -6,14 +6,10 @@ use anchor_spl::{
     token::{self, Burn, Mint, MintTo, Token, TokenAccount},
 };
 use mpl_token_metadata::{
-    instruction::{
-        approve_collection_authority,
-        builders::{Create, Verify},
-        verify_sized_collection_item, InstructionBuilder,
+    instructions::{
+        ApproveCollectionAuthority, Create, CreateBuilder, Verify
     },
-    state::{
-        AssetData, Creator, COLLECTION_AUTHORITY, EDITION, PREFIX as METADATA, TOKEN_RECORD_SEED,
-    },
+    types::{CreateArgs, Creator},
     ID as MPL_ID,
 };
 use solana_address_lookup_table_program::{
@@ -164,7 +160,7 @@ pub struct AMintProfileByAt<'info> {
     #[account(
         mut,
         seeds=[
-            METADATA.as_ref(),
+            "metadata".as_bytes(),
             MPL_ID.as_ref(),
             profile.key().as_ref(),
         ],
@@ -177,10 +173,10 @@ pub struct AMintProfileByAt<'info> {
     #[account(
         mut,
         seeds=[
-            METADATA.as_ref(),
+            "metadata".as_bytes(),
             MPL_ID.as_ref(),
             profile.key().as_ref(),
-            EDITION.as_ref(),
+            "edition".as_bytes(),
         ],
         bump,
         seeds::program = MPL_ID
@@ -214,7 +210,7 @@ pub struct AMintProfileByAt<'info> {
     #[account(
         mut,
         seeds=[
-            METADATA.as_ref(),
+            "metadata".as_bytes(),
             MPL_ID.as_ref(),
             collection.key().as_ref(),
         ],
@@ -227,10 +223,10 @@ pub struct AMintProfileByAt<'info> {
     #[account(
         mut,
         seeds=[
-            METADATA.as_ref(),
+            "metadata".as_bytes(),
             MPL_ID.as_ref(),
             collection.key().as_ref(),
-            EDITION.as_ref(),
+            "edition".as_bytes(),
         ],
         bump,
         seeds::program = MPL_ID
@@ -253,106 +249,106 @@ pub struct AMintProfileByAt<'info> {
     //NOTE: profile minting cost distribution account
 
     // Current profile holders
-    ///CHECK:
-    pub current_parent_profile_holder: AccountInfo<'info>,
-    ///CHECK:
-    pub current_grand_parent_profile_holder: AccountInfo<'info>,
-    ///CHECK:
-    pub current_great_grand_parent_profile_holder: AccountInfo<'info>,
-    ///CHECK:
-    pub current_ggreat_grand_parent_profile_holder: AccountInfo<'info>,
-    ///CHECK:
-    pub current_genesis_profile_holder: AccountInfo<'info>,
+    // ///CHECK:
+    // pub current_parent_profile_holder: AccountInfo<'info>,
+    // ///CHECK:
+    // pub current_grand_parent_profile_holder: AccountInfo<'info>,
+    // ///CHECK:
+    // pub current_great_grand_parent_profile_holder: AccountInfo<'info>,
+    // ///CHECK:
+    // pub current_ggreat_grand_parent_profile_holder: AccountInfo<'info>,
+    // ///CHECK:
+    // pub current_genesis_profile_holder: AccountInfo<'info>,
 
-    // Current Profile holder's opos token ata
-    #[account(
-        mut,
-        token::mint = opos_token,
-        token::authority = user,
-        constraint= user_opos_ata.amount >= main_state.profile_minting_cost @ MyError::NotEnoughTokenToMint
-    )]
-    pub user_opos_ata: Box<Account<'info, TokenAccount>>,
-    ///CHECK:
-    #[account(
-        mut,
-        constraint = init_ata_if_needed(
-            opos_token.to_account_info(),
-            parent_profile_holder_opos_ata.to_account_info(),
-            current_parent_profile_holder.to_account_info(),
-            user.to_account_info(),
-            token_program.to_account_info(),
-            system_program.to_account_info(),
-            associated_token_program.to_account_info(),
-        ) == Ok(())
-        // token::mint = opos_token,
-        // token::authority = current_parent_profile_holder,
-    )]
-    // pub parent_profile_holder_opos_ata: Box<Account<'info, TokenAccount>>,
-    pub parent_profile_holder_opos_ata: AccountInfo<'info>,
-    ///CHECK:
-    #[account(
-        mut,
-        constraint = init_ata_if_needed(
-            opos_token.to_account_info(),
-            grand_parent_profile_holder_opos_ata.to_account_info(),
-            current_grand_parent_profile_holder.to_account_info(),
-            user.to_account_info(),
-            token_program.to_account_info(),
-            system_program.to_account_info(),
-            associated_token_program.to_account_info(),
-        ) == Ok(())
-        // token::mint = opos_token,
-        // token::authority = current_grand_parent_profile_holder,
-    )]
-    pub grand_parent_profile_holder_opos_ata: AccountInfo<'info>,
-    ///CHECK:
-    #[account(
-        mut,
-        constraint = init_ata_if_needed(
-            opos_token.to_account_info(),
-            great_grand_parent_profile_holder_opos_ata.to_account_info(),
-            current_great_grand_parent_profile_holder.to_account_info(),
-            user.to_account_info(),
-            token_program.to_account_info(),
-            system_program.to_account_info(),
-            associated_token_program.to_account_info(),
-        ) == Ok(())
-        // token::mint = opos_token,
-        // token::authority = current_great_grand_parent_profile_holder,
-    )]
-    pub great_grand_parent_profile_holder_opos_ata: AccountInfo<'info>,
-    ///CHECK:
-    #[account(
-        mut,
-        constraint = init_ata_if_needed(
-            opos_token.to_account_info(),
-            ggreat_grand_parent_profile_holder_opos_ata.to_account_info(),
-            current_ggreat_grand_parent_profile_holder.to_account_info(),
-            user.to_account_info(),
-            token_program.to_account_info(),
-            system_program.to_account_info(),
-            associated_token_program.to_account_info(),
-        ) == Ok(())
-        // token::mint = opos_token,
-        // token::authority = current_ggreat_grand_parent_profile_holder,
-    )]
-    pub ggreat_grand_parent_profile_holder_opos_ata: AccountInfo<'info>,
-    ///CHECK:
-    #[account(
-        mut,
-        constraint = init_ata_if_needed(
-            opos_token.to_account_info(),
-            genesis_profile_holder_opos_ata.to_account_info(),
-            current_genesis_profile_holder.to_account_info(),
-            user.to_account_info(),
-            token_program.to_account_info(),
-            system_program.to_account_info(),
-            associated_token_program.to_account_info(),
-        ) == Ok(())
-        // token::mint = opos_token,
-        // token::authority = current_genesis_profile_holder,
-    )]
-    pub genesis_profile_holder_opos_ata: AccountInfo<'info>,
+    // // Current Profile holder's opos token ata
+    // #[account(
+    //     mut,
+    //     token::mint = opos_token,
+    //     token::authority = user,
+    //     constraint= user_opos_ata.amount >= main_state.profile_minting_cost @ MyError::NotEnoughTokenToMint
+    // )]
+    // pub user_opos_ata: Box<Account<'info, TokenAccount>>,
+    // ///CHECK:
+    // #[account(
+    //     mut,
+    //     constraint = init_ata_if_needed(
+    //         opos_token.to_account_info(),
+    //         parent_profile_holder_opos_ata.to_account_info(),
+    //         current_parent_profile_holder.to_account_info(),
+    //         user.to_account_info(),
+    //         token_program.to_account_info(),
+    //         system_program.to_account_info(),
+    //         associated_token_program.to_account_info(),
+    //     ) == Ok(())
+    //     // token::mint = opos_token,
+    //     // token::authority = current_parent_profile_holder,
+    // )]
+    // // pub parent_profile_holder_opos_ata: Box<Account<'info, TokenAccount>>,
+    // pub parent_profile_holder_opos_ata: AccountInfo<'info>,
+    // ///CHECK:
+    // #[account(
+    //     mut,
+    //     constraint = init_ata_if_needed(
+    //         opos_token.to_account_info(),
+    //         grand_parent_profile_holder_opos_ata.to_account_info(),
+    //         current_grand_parent_profile_holder.to_account_info(),
+    //         user.to_account_info(),
+    //         token_program.to_account_info(),
+    //         system_program.to_account_info(),
+    //         associated_token_program.to_account_info(),
+    //     ) == Ok(())
+    //     // token::mint = opos_token,
+    //     // token::authority = current_grand_parent_profile_holder,
+    // )]
+    // pub grand_parent_profile_holder_opos_ata: AccountInfo<'info>,
+    // ///CHECK:
+    // #[account(
+    //     mut,
+    //     constraint = init_ata_if_needed(
+    //         opos_token.to_account_info(),
+    //         great_grand_parent_profile_holder_opos_ata.to_account_info(),
+    //         current_great_grand_parent_profile_holder.to_account_info(),
+    //         user.to_account_info(),
+    //         token_program.to_account_info(),
+    //         system_program.to_account_info(),
+    //         associated_token_program.to_account_info(),
+    //     ) == Ok(())
+    //     // token::mint = opos_token,
+    //     // token::authority = current_great_grand_parent_profile_holder,
+    // )]
+    // pub great_grand_parent_profile_holder_opos_ata: AccountInfo<'info>,
+    // ///CHECK:
+    // #[account(
+    //     mut,
+    //     constraint = init_ata_if_needed(
+    //         opos_token.to_account_info(),
+    //         ggreat_grand_parent_profile_holder_opos_ata.to_account_info(),
+    //         current_ggreat_grand_parent_profile_holder.to_account_info(),
+    //         user.to_account_info(),
+    //         token_program.to_account_info(),
+    //         system_program.to_account_info(),
+    //         associated_token_program.to_account_info(),
+    //     ) == Ok(())
+    //     // token::mint = opos_token,
+    //     // token::authority = current_ggreat_grand_parent_profile_holder,
+    // )]
+    // pub ggreat_grand_parent_profile_holder_opos_ata: AccountInfo<'info>,
+    // ///CHECK:
+    // #[account(
+    //     mut,
+    //     constraint = init_ata_if_needed(
+    //         opos_token.to_account_info(),
+    //         genesis_profile_holder_opos_ata.to_account_info(),
+    //         current_genesis_profile_holder.to_account_info(),
+    //         user.to_account_info(),
+    //         token_program.to_account_info(),
+    //         system_program.to_account_info(),
+    //         associated_token_program.to_account_info(),
+    //     ) == Ok(())
+    //     // token::mint = opos_token,
+    //     // token::authority = current_genesis_profile_holder,
+    // )]
+    // pub genesis_profile_holder_opos_ata: AccountInfo<'info>,
 }
 
 impl<'info> AMintProfileByAt<'info> {
@@ -438,146 +434,39 @@ impl<'info> AMintProfileByAt<'info> {
         let entry_point = "https://shdw-drive.genesysgo.net/FuBjTTmQuqM7pGR2gFsaiBxDmdj8ExP5fzNwnZyE2PgC/".to_string();
         let uri = format!("{}{}", entry_point, uri_hash);
 
-        let asset_data = AssetData {
+        let asset_data = CreateArgs::V1 {
             name,
             symbol,
             uri,
-            collection: Some(mpl_token_metadata::state::Collection {
+            collection: Some(mpl_token_metadata::types::Collection {
                 verified: false,
                 key: self.collection.key(),
             }),
             uses: None,
             creators,
             // creators: None,
-            collection_details: Some(mpl_token_metadata::state::CollectionDetails::V1 { size: 0 }),
+            collection_details: Some(mpl_token_metadata::types::CollectionDetails::V1 { size: 0 }),
             is_mutable: true, //NOTE: may be for testing
             rule_set: None,
-            token_standard: mpl_token_metadata::state::TokenStandard::NonFungible,
+            token_standard: mpl_token_metadata::types::TokenStandard::NonFungible,
             primary_sale_happened: true,
             seller_fee_basis_points, //EX: 20% (80% goes to seller)
+            decimals: Some(0),
+            print_supply: Some(mpl_token_metadata::types::PrintSupply::Zero),
         };
 
-        let ix = Create {
-            mint: mint.key(),
-            payer: user.key(),
-            authority: user.key(),
-            initialize_mint: false,
-            system_program: system_program.key(),
-            metadata: metadata.key(),
-            update_authority: main_state.key(),
-            spl_token_program: token_program.key(),
-            sysvar_instructions: sysvar_instructions.key(),
-            update_authority_as_signer: true,
-            master_edition: Some(edition.key()),
-            args: mpl_token_metadata::instruction::CreateArgs::V1 {
-                asset_data,
-                decimals: Some(0),
-                print_supply: Some(mpl_token_metadata::state::PrintSupply::Zero),
-            },
-        }
+        let ix = CreateBuilder::new()
+        .metadata(metadata.key())
+        .master_edition(Some(edition.key()))
+        .mint( mint.key(), false)
+        .authority(user.key())
+        .payer(user.key())
+        .update_authority(main_state.key(),true)
+        .spl_token_program(Some(token_program.key()))
+        .sysvar_instructions(sysvar_instructions.key())
+        .system_program(system_program.key())
+        .create_args(asset_data)
         .instruction();
-
-        // NOTE: minting cost distribution
-        let sender_ata = self.user_opos_ata.to_account_info();
-        let cost = main_state.profile_minting_cost;
-        let minting_cost_distribution = main_state.minting_cost_distribution;
-
-
-        let mut transfer_data = Vec::new();
-
-        transfer_data.push(
-            TransferModel{
-               account_opos_ata: self
-               .parent_profile_holder_opos_ata.to_account_info(),
-               value: (cost as u128 * minting_cost_distribution.parent as u128
-                / TOTAL_SELLER_BASIS_POINTS as u128) as u64,
-                key: self
-                .parent_profile_holder_opos_ata
-                .to_account_info().key().to_string()
-            }
-        );
-
-        let gparent = TransferModel{
-            account_opos_ata: self
-            .grand_parent_profile_holder_opos_ata.to_account_info(),
-            value: (cost as u128 * minting_cost_distribution.grand_parent as u128
-             / TOTAL_SELLER_BASIS_POINTS as u128) as u64,
-             key: self
-             .grand_parent_profile_holder_opos_ata
-             .to_account_info().key().to_string()
-         };
-
-         let gparent_index = get_transfer_index(transfer_data.clone(), gparent.clone().key);
-        if gparent_index == -1 {
-            transfer_data.push(gparent)
-        } else {
-            transfer_data[gparent_index as usize].value = transfer_data[gparent_index as usize].value + gparent.value;
-        }
-
-
-        let ggparent = TransferModel{
-            account_opos_ata: self
-            .great_grand_parent_profile_holder_opos_ata.to_account_info(),
-            value: (cost as u128 * minting_cost_distribution.great_grand_parent as u128
-             / TOTAL_SELLER_BASIS_POINTS as u128) as u64,
-             key: self
-             .great_grand_parent_profile_holder_opos_ata
-             .to_account_info().key().to_string()
-         };
-
-         let ggparent_index = get_transfer_index(transfer_data.clone(), ggparent.clone().key);
-        if ggparent_index == -1 {
-            transfer_data.push(ggparent.clone())
-        } else {
-            transfer_data[ggparent_index as usize].value = transfer_data[ggparent_index as usize].value + ggparent.clone().value;
-        }
-
-
-        let gggparent = TransferModel{
-            account_opos_ata: self
-            .ggreat_grand_parent_profile_holder_opos_ata.to_account_info(),
-            value: (cost as u128 * minting_cost_distribution.ggreat_grand_parent as u128
-             / TOTAL_SELLER_BASIS_POINTS as u128) as u64,
-             key: self
-             .ggreat_grand_parent_profile_holder_opos_ata
-             .to_account_info().key().to_string()
-         };
-
-        let gggparent_index = get_transfer_index(transfer_data.clone(), gggparent.clone().key);
-        if gggparent_index == -1 {
-            transfer_data.push(gggparent.clone())
-        } else {
-            transfer_data[gggparent_index as usize].value = transfer_data[gggparent_index as usize].value + gggparent.clone().value;
-        }
-
-        let gensis = TransferModel{
-            account_opos_ata: self
-            .genesis_profile_holder_opos_ata.to_account_info(),
-            value: (cost as u128 * minting_cost_distribution.genesis as u128
-             / TOTAL_SELLER_BASIS_POINTS as u128) as u64,
-             key: self
-             .genesis_profile_holder_opos_ata
-             .to_account_info().key().to_string()
-         };
-
-         let gensis_index = get_transfer_index(transfer_data.clone(), gensis.clone().key);
-        if gensis_index == -1 {
-            transfer_data.push(gensis.clone())
-        } else {
-            transfer_data[gensis_index as usize].value = transfer_data[gensis_index as usize].value + gensis.clone().value;
-        }
-        
-
-        for transfer_item in transfer_data {
-            transfer_tokens(
-                sender_ata.to_account_info(),
-                transfer_item.account_opos_ata.to_account_info(),
-                user.to_account_info(),
-                token_program.to_account_info(),
-                transfer_item.value,
-            )?;
-        }
-    
 
 
         invoke_signed(
@@ -645,24 +534,4 @@ impl<'info> AMintProfileByAt<'info> {
         Ok(())
     }
 
-}
-
-
-
-#[derive(Clone)]
-pub struct TransferModel<'info> {
-    pub account_opos_ata: AccountInfo<'info>,
-    pub key: String,
-    pub value: u64
-}
-
-pub fn get_transfer_index(datas: Vec<TransferModel>, key: String) -> i32 {
-    let mut indexer = -1;
-    for data in datas.into_iter().enumerate() {
-       if data.1.key == key {
-          indexer = data.0 as i32;
-          break
-       }
-    }
-    indexer
 }

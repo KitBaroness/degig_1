@@ -30,6 +30,8 @@ describe("sop", () => {
   const program = anchor.workspace.Mmoshforge as Program<Mmoshforge>;
   const programId = program.programId;
 
+
+
   console.log("prgram id ", programId.toBase58())
   const owner = provider.publicKey;
   const adConn = new AdConn(provider, program.programId);
@@ -37,14 +39,18 @@ describe("sop", () => {
   const metaplex = new Metaplex(provider.connection)
   const receiver = new web3.PublicKey("DA8ZEAcwZdzBzqrcr5N9vEvvSbBhmrdvpp6V4wksM6eG")
 
-  return
+
+
 
   it("minting opos token", async () => {
     const { mint, txSignature } = await __mintOposToken(provider);
     log({ oposToken: mint.toBase58() })
   })
 
+
+
   it("Initialise Main State!", async () => {
+    console.log(adConn.mainState.toBase58())
     const accountInfo = await connection.getAccountInfo(adConn.mainState)
     if (accountInfo != null) return
     const profileMintingCost = new BN(calcNonDecimalValue(20000, 9))
@@ -74,31 +80,25 @@ describe("sop", () => {
   });
 
 
+  // let rootCollection: web3.PublicKey = null
+  // it("creating root Collections", async () => {
 
-  let rootCollection: web3.PublicKey = null
-  it("creating root Collections", async () => {
+  //   const name = "MMOSH Root Collection"
+  //   const symbol = "MMOSH"
+  //   const uri = "https://shdw-drive.genesysgo.net/FuBjTTmQuqM7pGR2gFsaiBxDmdj8ExP5fzNwnZyE2PgC/root_collection_new.json"
+  //   const res = await adConn.createCollection({
+  //     name,
+  //     symbol,
+  //     uri,
+  //     collectionType: "root",
+  //     parrentCollection: rootCollection,
+  //   })
+  //   assert(res?.Ok, "Unable to create collection")
+  //   log({ sign: res.Ok.signature, collection: res.Ok.info.collection })
+  //   rootCollection = new web3.PublicKey(res.Ok.info.collection)
 
-    const name = "MMOSH Root Collection"
-    const symbol = "MMOSH"
-    const uri = "https://shdw-drive.genesysgo.net/FuBjTTmQuqM7pGR2gFsaiBxDmdj8ExP5fzNwnZyE2PgC/root_collection_new.json"
-    const res = await adConn.createCollection({
-      name,
-      symbol,
-      uri,
-      collectionType: "root",
-      parrentCollection: rootCollection,
-    })
-    assert(res?.Ok, "Unable to create collection")
-    log({ sign: res.Ok.signature, collection: res.Ok.info.collection })
-    rootCollection = new web3.PublicKey(res.Ok.info.collection)
-
-    console.log("new root collection ",rootCollection.toBase58());
-  })
-
-  return
-
-
-
+  //   console.log("new root collection ",rootCollection.toBase58());
+  // })
 
 
   // let badgeCollection: web3.PublicKey = null

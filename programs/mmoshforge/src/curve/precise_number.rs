@@ -9,7 +9,7 @@ use crate::curve::signed_precise_number::SignedPreciseNumber;
 use crate::curve::curveuint::U192;
 
 // Allows for easy swapping between different internal representations
-pub type InnerUint = U192;
+pub type InnerUint = U192; 
 
 pub static ONE_PREC: PreciseNumber = PreciseNumber { value: one() };
 pub static ZERO_PREC: PreciseNumber = PreciseNumber { value: zero() };

@@ -1,6 +1,6 @@
 #![allow(unused)]
 use anchor_lang::prelude::*;
-declare_id!("5NaZ252KCHxoVEpGXQE2z5StBQoDoqoTpB2VruauSnGG");
+declare_id!("GQJBSNqckwApKwrjHMgvhhFtwZFxb3YCoDFFcLmYCnEA");
 
 pub mod _main;
 pub mod activation_token;
@@ -13,12 +13,19 @@ pub mod error;
 pub mod other_states;
 pub mod utils;
 
+pub mod vault;
+pub mod launchpass;
+
 use _main::*;
 use activation_token::*;
 use collection_factory::*;
 use other_states::LineageInfo;
 use profile::*;
 use curve::*;
+
+use vault::*;
+use launchpass::*;
+use other_states::MintingCostDistribution;
 
 #[program]
 pub mod mmoshforge {
@@ -65,17 +72,6 @@ pub mod mmoshforge {
         Ok(())
     }
 
-    pub fn update_collection<'info>(
-        ctx: Context<AUpdateCollection>,
-        name: String,
-        symbol: String,
-        uri: String,
-    ) -> Result<()> {
-
-        collection_factory::update_collection(ctx, name, symbol, uri )?;
-        Ok(())
-    }
-
 
     pub fn mint_genesis_profile(
         ctx: Context<AMintProfileByAdmin>,
@@ -84,14 +80,6 @@ pub mod mmoshforge {
         profile::mint_genesis_profile(ctx, input)?;
         Ok(())
     }
-
-    pub fn project_distribution(
-      ctx: Context<AProjectDistribution>
-  ) -> Result<()> {
-      profile::project_distribution(ctx)?;
-      Ok(())
-  }
-
 
     //User calls
     pub fn mint_profile_by_at(
@@ -246,5 +234,44 @@ pub mod mmoshforge {
       pub fn sell_native_v0(ctx: Context<SellNativeV0>, args: SellV0Args) -> Result<()> {
         curve::instructions::sell::sell_native_v0::handler(ctx, args)
       }
+
+      pub fn init_vault(ctx: Context<InitVault>, lock_date: u64, receiver: Pubkey) -> Result<()> {
+         vault::instructions::init_vault(ctx, lock_date, receiver)
+      }
+
+      pub fn stake_vault(ctx: Context<StakeVault>, value: u64) -> Result<()> {
+        vault::instructions::stake_vault(ctx, value)
+      }
+
+      pub fn unstake_vault(ctx: Context<UnstakeVault>, value: u64) -> Result<()> {
+        vault::instructions::unstake_vault(ctx, value)
+      }
+
+      pub fn init_launch_pass(
+        ctx: Context<InitLaunchPass>, 
+        usdc: Pubkey,
+        redeem_amount: u64,
+        redeem_date: u64,
+        cost: u64,
+        distribution: MintingCostDistribution,
+        name: String,
+        symbol: String,
+        uri: String
+      ) -> Result<()> {
+        launchpass::instructions::init_launch_pass(ctx, usdc, redeem_amount, redeem_date, cost, distribution, name, symbol, uri)
+     }
+
+     pub fn buy_launch_pass(
+      ctx: Context<BuyLaunchPass>, 
+     ) -> Result<()> {
+      launchpass::instructions::buy_launch_pass(ctx)
+     }
+
+
+     pub fn redeem_launch_pass(
+      ctx: Context<RedeemLaunchPass>, 
+     ) -> Result<()> {
+      launchpass::instructions::redeem_launch_pass(ctx)
+     }
 
 }
