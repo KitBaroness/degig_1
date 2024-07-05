@@ -61,14 +61,7 @@ pub fn mint_genesis_profile(
         profile_state.lineage.great_grand_parent = profile;
         profile_state.lineage.ggreat_grand_parent = profile;
 
-        // profile_state.mint = ctx.accounts.profile.key();
-        // profile_state.lineage.creator = ctx.accounts.admin.key();
-        // profile_state.lineage.parent = input.parent_mint;
-        // profile_state.lineage.grand_parent = input.lineage.parent;
-        // profile_state.lineage.great_grand_parent = input.lineage.grand_parent;
-        // profile_state.lineage.ggreat_grand_parent = input.lineage.ggreat_grand_parent;
-        // profile_state.lineage.generation = input.lineage.generation;
-        // profile_state.lineage.total_child = input.lineage.total_child;
+
         profile_state.lineage.generation = 1;
         profile_state.lineage.total_child = 0;
 
