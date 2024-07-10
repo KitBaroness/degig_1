@@ -5,6 +5,7 @@ pub struct VaultState {
     pub mint: Pubkey,
     pub lock_date: u64,
     pub authority: Pubkey,
+    pub owner: Pubkey,
     pub _bump: u8,
 }
 

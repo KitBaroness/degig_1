@@ -26,7 +26,7 @@ pub fn init_launch_pass(
         let launch_pass = &mut ctx.accounts.launch_pass;
         launch_pass.owner = ctx.accounts.owner.key();
         launch_pass.mint = ctx.accounts.mint.key();
-        launch_pass.usdc = usdc.key();
+        launch_pass.usdc =  ctx.accounts.usdc.key();
         launch_pass.redeem_date = redeem_date;
         launch_pass.redeem_amount = redeem_amount;
         launch_pass.distribution = distribution;
@@ -45,6 +45,9 @@ pub struct InitLaunchPass<'info> {
 
     #[account()]
     pub mint: Box<Account<'info, Mint>>,
+
+    #[account()]
+    pub usdc: Box<Account<'info, Mint>>,
 
     ///CHECK:
     #[account(mut)]

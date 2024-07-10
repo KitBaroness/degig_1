@@ -36,17 +36,20 @@ pub struct RedeemLaunchPass<'info> {
 
     ///CHECK:
     pub owner: AccountInfo<'info>,
+
     #[account(
         mut,
-        seeds = [SEED_LAUNCH_PASS, owner.key().as_ref() ,launch_token.key().as_ref()],
+        seeds = [SEED_LAUNCH_PASS, owner.key().as_ref(),launch_token.key().as_ref()],
         bump,
     )]
     pub launc_pass_state: Box<Account<'info, LaunchPassState>>,
 
     ///CHECK:
+    pub stake_key: AccountInfo<'info>,
+    ///CHECK:
     #[account(
         mut,
-        seeds = [SEED_VAULT, owner.key().as_ref() ,mint.key().as_ref()],
+        seeds = [SEED_VAULT, stake_key.key().as_ref(),mint.key().as_ref()],
         bump
     )]
     pub vault: Box<Account<'info, VaultState>>,
@@ -101,10 +104,10 @@ impl<'info> RedeemLaunchPass<'info> {
             .to_account_info(),
             to: self.receiver_ata.to_account_info(),
             authority: self
-            .launc_pass_state
+            .vault
             .to_account_info()
         };
-        token::transfer(CpiContext::new(self.token_program.to_account_info(), cpi_accounts).with_signer(&[&[SEED_LAUNCH_PASS, self.owner.key().as_ref() ,self.mint.key().as_ref(), &[self.launc_pass_state._bump]]]), self.launc_pass_state.redeem_amount)?;
+        token::transfer(CpiContext::new(self.token_program.to_account_info(), cpi_accounts).with_signer(&[&[SEED_VAULT, self.stake_key.key().as_ref() ,self.mint.key().as_ref(), &[self.vault._bump]]]), self.launc_pass_state.redeem_amount)?;
         Ok(())
     }
     pub fn burn_launch_pass(&mut self) -> Result<()> {

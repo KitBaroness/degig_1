@@ -6,11 +6,11 @@ use crate::{constants::SEED_VAULT, vault::VaultState};
 pub fn init_vault(
     ctx: Context<InitVault>,
     lock_date: u64,
-    receiver: Pubkey
 ) -> Result<()> {
     {
         let vault = &mut ctx.accounts.vault;
-        vault.authority = receiver;
+        vault.authority = ctx.accounts.authority.key();
+        vault.owner = ctx.accounts.owner.key();
         vault.lock_date = lock_date;
         vault.mint = ctx.accounts.mint.key();
         vault._bump = ctx.bumps.vault;
@@ -25,12 +25,18 @@ pub struct InitVault<'info> {
     )]
     pub owner: Signer<'info>,
 
+    ///CHECK:
+    pub authority: AccountInfo<'info>,
+
+    ///CHECK:
+    pub stake_key: AccountInfo<'info>,
+
     #[account()]
     pub mint: Box<Account<'info, Mint>>,
 
     #[account(
         init,
-        seeds = [SEED_VAULT, owner.key().as_ref() ,mint.key().as_ref()],
+        seeds = [SEED_VAULT, stake_key.key().as_ref(), mint.key().as_ref()],
         bump,
         payer = owner,
         space= 8 + VaultState::MAX_SIZE

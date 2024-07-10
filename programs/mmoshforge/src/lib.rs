@@ -235,8 +235,8 @@ pub mod mmoshforge {
         curve::instructions::sell::sell_native_v0::handler(ctx, args)
       }
 
-      pub fn init_vault(ctx: Context<InitVault>, lock_date: u64, receiver: Pubkey) -> Result<()> {
-         vault::instructions::init_vault(ctx, lock_date, receiver)
+      pub fn init_vault(ctx: Context<InitVault>, lock_date: u64) -> Result<()> {
+         vault::instructions::init_vault(ctx, lock_date)
       }
 
       pub fn stake_vault(ctx: Context<StakeVault>, value: u64) -> Result<()> {

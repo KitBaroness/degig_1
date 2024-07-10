@@ -30,9 +30,15 @@ pub struct StakeVault<'info> {
     #[account()]
     pub mint: Box<Account<'info, Mint>>,
 
+    ///CHECK:
+    pub authority: AccountInfo<'info>,
+
+    ///CHECK:
+    pub stake_key: AccountInfo<'info>,
+
     #[account(
         mut,
-        seeds = [SEED_VAULT, owner.key().as_ref() ,mint.key().as_ref()],
+        seeds = [SEED_VAULT, stake_key.key().as_ref(), mint.key().as_ref()],
         bump,
     )]
     pub vault: Box<Account<'info, VaultState>>,
