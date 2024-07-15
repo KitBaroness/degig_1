@@ -13,7 +13,6 @@ use crate::{constants::SEED_LAUNCH_PASS, launchpass::LaunchPassState, other_stat
 
 pub fn init_launch_pass(
     ctx: Context<InitLaunchPass>,
-    usdc: Pubkey,
     redeem_amount: u64,
     redeem_date: u64,
     cost: u64,
@@ -25,13 +24,14 @@ pub fn init_launch_pass(
     {
         let launch_pass = &mut ctx.accounts.launch_pass;
         launch_pass.owner = ctx.accounts.owner.key();
-        launch_pass.mint = ctx.accounts.mint.key();
-        launch_pass.usdc =  ctx.accounts.usdc.key();
         launch_pass.redeem_date = redeem_date;
         launch_pass.redeem_amount = redeem_amount;
-        launch_pass.distribution = distribution;
         launch_pass.cost = cost;
+        launch_pass.distribution = distribution;
         launch_pass._bump = ctx.bumps.launch_pass;
+    }
+    {
+        ctx.accounts.init_launch(name, symbol, uri);
     }
     Ok(())
 }
@@ -43,33 +43,25 @@ pub struct InitLaunchPass<'info> {
     )]
     pub owner: Signer<'info>,
 
-    #[account()]
-    pub mint: Box<Account<'info, Mint>>,
-
-    #[account()]
-    pub usdc: Box<Account<'info, Mint>>,
-
-    ///CHECK:
-    #[account(mut)]
-    pub user_mint_ata: AccountInfo<'info>,
-
     #[account(
         init,
-        seeds = [SEED_LAUNCH_PASS, owner.key().as_ref() ,mint.key().as_ref()],
+        signer,
+        payer = owner,
+        mint::decimals = 0,
+        mint::authority = launch_pass,
+        mint::freeze_authority = launch_pass,
+    )]
+    pub mint: Box<Account<'info, Mint>>,
+    
+    #[account(
+        init,
+        seeds = [SEED_LAUNCH_PASS, owner.key().as_ref(), mint.key().as_ref()],
         bump,
         payer = owner,
         space= 8 + LaunchPassState::MAX_SIZE
     )]
     pub launch_pass: Box<Account<'info, LaunchPassState>>,
-
-    #[account(
-        init,
-        payer = owner, // minter, the one who is minting
-        associated_token::mint = mint, // mint of the token
-        associated_token::authority = launch_pass //authority that should be a PDA account
-    )]
-    token_account: Account<'info, TokenAccount>,
-
+    
     ///CHECK:
     #[account(
         mut,
@@ -81,7 +73,7 @@ pub struct InitLaunchPass<'info> {
         bump,
         seeds::program = MPL_ID
     )]
-    pub activation_token_metadata: AccountInfo<'info>,
+    pub mint_metadata: AccountInfo<'info>,
     
     ///CHECK:
     #[account()]
@@ -101,11 +93,10 @@ impl<'info> InitLaunchPass<'info> {
     pub fn init_launch(&self, name: String, symbol: String, uri: String) -> Result<()> {
         let mint = self.mint.to_account_info();
         let user = self.owner.to_account_info();
-        let user_mint_ata = self.user_mint_ata.to_account_info();
         let system_program = self.system_program.to_account_info();
         let token_program = self.token_program.to_account_info();
         let mpl_program = self.mpl_program.to_account_info();
-        let metadata = self.activation_token_metadata.to_account_info();
+        let metadata = self.mint_metadata.to_account_info();
         let mpl_program = self.mpl_program.to_account_info();
         let ata_program = self.associated_token_program.to_account_info();
         let sysvar_instructions = self.sysvar_instructions.to_account_info();
@@ -156,7 +147,6 @@ impl<'info> InitLaunchPass<'info> {
             &[
                 mint.to_account_info(),
                 user.to_account_info(),
-                user_mint_ata,
                 main_state.to_account_info(),
                 metadata,
                 mpl_program,

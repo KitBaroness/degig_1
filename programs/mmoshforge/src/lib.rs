@@ -235,8 +235,8 @@ pub mod mmoshforge {
         curve::instructions::sell::sell_native_v0::handler(ctx, args)
       }
 
-      pub fn init_vault(ctx: Context<InitVault>, lock_date: u64) -> Result<()> {
-         vault::instructions::init_vault(ctx, lock_date)
+      pub fn init_vault(ctx: Context<InitVault>, lock_date: u64, value: u64) -> Result<()> {
+         vault::instructions::init_vault(ctx, lock_date, value)
       }
 
       pub fn stake_vault(ctx: Context<StakeVault>, value: u64) -> Result<()> {
@@ -249,7 +249,6 @@ pub mod mmoshforge {
 
       pub fn init_launch_pass(
         ctx: Context<InitLaunchPass>, 
-        usdc: Pubkey,
         redeem_amount: u64,
         redeem_date: u64,
         cost: u64,
@@ -258,7 +257,7 @@ pub mod mmoshforge {
         symbol: String,
         uri: String
       ) -> Result<()> {
-        launchpass::instructions::init_launch_pass(ctx, usdc, redeem_amount, redeem_date, cost, distribution, name, symbol, uri)
+        launchpass::instructions::init_launch_pass(ctx, redeem_amount, redeem_date, cost, distribution, name, symbol, uri)
      }
 
      pub fn buy_launch_pass(

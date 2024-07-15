@@ -84,7 +84,7 @@ pub fn buy_launch_pass(ctx: Context<BuyLaunchPass>) -> Result<()> {
             .to_account_info(),
         authority.to_account_info(),
         token_program.to_account_info(),
-        cost as u64 - (parent_cost + grand_parent_cost) ,
+        cost as u64,
     )?;
     
     Ok(())
@@ -117,14 +117,14 @@ pub struct BuyLaunchPass<'info> {
     ///CHECK:
     #[account(
         mut,
-        token::mint = launc_pass_state.usdc
+        token::mint = usdc_mint
     )]
     pub owner_ata: Box<Account<'info, TokenAccount>>,
 
     ///CHECK:
     #[account(
         mut,
-        token::mint = launc_pass_state.usdc
+        token::mint = usdc_mint
     )]
     pub sender_ata: Box<Account<'info, TokenAccount>>,
 
@@ -134,7 +134,6 @@ pub struct BuyLaunchPass<'info> {
     pub mint: Box<Account<'info, Mint>>,
 
     ///CHECK:
-    #[account(address = launc_pass_state.usdc)]
     pub usdc_mint: AccountInfo<'info>,
 
 

@@ -379,8 +379,8 @@ impl<'info> AMintProfileByAt<'info> {
         )?;
 
         // Creators Setup for royalty
-        let trading_price_distribution = main_state.trading_price_distribution;
-        let seller_fee_basis_points = TOTAL_SELLER_BASIS_POINTS - trading_price_distribution.seller;
+        let trading_price_distribution = main_state.minting_cost_distribution;
+        let seller_fee_basis_points = TOTAL_SELLER_BASIS_POINTS;
         let creators = vec![
             //NOTE: currently not royalty info for creator
             Creator {

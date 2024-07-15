@@ -23,7 +23,6 @@ pub struct StakeVault<'info> {
     #[account(
         mut,
         token::mint = mint,
-        token::authority = owner
     )]
     pub owner_ata: Box<Account<'info, TokenAccount>>,
 
@@ -57,13 +56,13 @@ pub struct StakeVault<'info> {
 
 impl<'info> StakeVault<'info> {
     pub fn init_stake_vault(&self, value: u64) -> Result<()> {
-        transfer_tokens(
-            self.owner_ata.to_account_info(),
-            self.token_account.to_account_info(),
-            self.owner.to_account_info(),
-            self.token_program.to_account_info(),
-            value
-        )?;
+        // transfer_tokens(
+        //     self.owner_ata.to_account_info(),
+        //     self.token_account.to_account_info(),
+        //     self.owner.to_account_info(),
+        //     self.token_program.to_account_info(),
+        //     value
+        // )?;
         Ok(())
     }
 }

@@ -5,8 +5,6 @@ use crate::other_states::MintingCostDistribution;
 #[account]
 pub struct LaunchPassState {
     pub owner: Pubkey,
-    pub usdc: Pubkey,
-    pub mint: Pubkey,
     pub cost: u64,
     pub distribution: MintingCostDistribution,
     pub redeem_date: u64,
