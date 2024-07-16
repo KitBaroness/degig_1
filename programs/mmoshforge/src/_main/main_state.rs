@@ -23,26 +23,6 @@ pub struct MainState {
 
 impl MainState {
     pub const MAX_SIZE: usize = std::mem::size_of::<Self>();
-    // pub fn verify_profile<'info>(&self, metadata_account_info: &'info AccountInfo) -> Result<()> {
-    //     let metadata =
-    //         Metadata::from_account_info(metadata_account_info).map_err(|_| MyError::UnknownNft)?;
-    //     let collection_info = metadata.collection.ok_or_else(|| MyError::UnknownNft)?;
-    //     Ok(())
-    // }
-
-    pub fn verify_activation_token(
-        &self,
-        metadata_account_info: &AccountInfo,
-    ) -> Result<()> {
-        let metadata =
-            Metadata::try_from(metadata_account_info).map_err(|_| MyError::UnknownNft)?;
-        let collection_info = metadata.collection.ok_or(MyError::UnknownNft)?;
-        // require!(
-        //     collection_info.key == self.activation_token_collection_id && collection_info.verified,
-        //     MyError::UnknownNft
-        // );
-        Ok(())
-    }
 }
 
 #[derive(AnchorSerialize, AnchorDeserialize, Default, Clone, Copy)]

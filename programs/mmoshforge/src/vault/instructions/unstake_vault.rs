@@ -32,11 +32,11 @@ pub struct UnstakeVault<'info> {
     pub mint: Box<Account<'info, Mint>>,
 
     ///CHECK:
-    pub owner: AccountInfo<'info>,
+    pub stake_key: AccountInfo<'info>,
 
     #[account(
         mut,
-        seeds = [SEED_VAULT, owner.key().as_ref() ,mint.key().as_ref()],
+        seeds = [SEED_VAULT, stake_key.key().as_ref(),mint.key().as_ref()],
         bump
     )]
     pub vault: Box<Account<'info, VaultState>>,
@@ -69,7 +69,7 @@ impl<'info> UnstakeVault<'info> {
             .vault
             .to_account_info()
         };
-        token::transfer(CpiContext::new(self.token_program.to_account_info(), cpi_accounts).with_signer(&[&[SEED_VAULT, self.owner.key().as_ref() ,self.mint.key().as_ref(), &[self.vault._bump]]]), value)?;
+        token::transfer(CpiContext::new(self.token_program.to_account_info(), cpi_accounts).with_signer(&[&[SEED_VAULT, self.stake_key.key().as_ref() ,self.mint.key().as_ref(), &[self.vault._bump]]]), value)?;
         Ok(())
     }
 }
