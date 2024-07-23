@@ -380,37 +380,33 @@ impl<'info> AMintProfileByAt<'info> {
 
         // Creators Setup for royalty
         let trading_price_distribution = main_state.minting_cost_distribution;
-        let seller_fee_basis_points = TOTAL_SELLER_BASIS_POINTS;
+        let seller_fee_basis_points = TOTAL_SELLER_BASIS_POINTS - trading_price_distribution.ggreat_grand_parent;
         let creators = vec![
             //NOTE: currently not royalty info for creator
             Creator {
                 address: user.key(),
                 verified: false,
-                share: 0,
+                share: 100,
             },
             Creator {
                 address: get_vault_pda(&self.profile_state.lineage.parent).0,
                 verified: false,
-                share: (trading_price_distribution.parent as u64 * 100u64
-                    / seller_fee_basis_points as u64) as u8,
+                share: 0,
             },
             Creator {
                 address: get_vault_pda(&self.profile_state.lineage.grand_parent).0,
                 verified: false,
-                share: (trading_price_distribution.grand_parent as u64 * 100u64
-                    / seller_fee_basis_points as u64) as u8,
+                share: 0,
             },
             Creator {
                 address: get_vault_pda(&self.profile_state.lineage.great_grand_parent).0,
                 verified: false,
-                share: (trading_price_distribution.great_grand_parent as u64 * 100u64
-                    / seller_fee_basis_points as u64) as u8,
+                share: 0,
             },
             Creator {
                 address: get_vault_pda(&main_state.genesis_profile).0,
                 verified: false,
-                share: (trading_price_distribution.genesis as u64 * 100u64
-                    / seller_fee_basis_points as u64) as u8,
+                share: 0,
             },
         ];
 
