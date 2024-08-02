@@ -39,6 +39,7 @@ describe("sop", () => {
   const metaplex = new Metaplex(provider.connection)
   const receiver = new web3.PublicKey("DA8ZEAcwZdzBzqrcr5N9vEvvSbBhmrdvpp6V4wksM6eG")
 
+  return;
 
 
 

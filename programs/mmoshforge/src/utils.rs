@@ -31,7 +31,7 @@ pub fn transfer_tokens<'info>(
 pub fn transfer_tokens_from_main<'info>(
     from: AccountInfo<'info>,
     to: AccountInfo<'info>,
-    main: &Account<'info, MainState>,
+    main: &Box<Account<'info, MainState>>,
     token_program: AccountInfo<'info>,
     amount: u64,
 ) -> Result<()> {
@@ -44,7 +44,7 @@ pub fn transfer_tokens_from_main<'info>(
         CpiContext::new_with_signer(
             token_program,
             cpi_accounts,
-            &[&[SEED_MAIN_STATE, &[main._bump]]],
+            &[&[SEED_MAIN_STATE, &[main.bump]]],
         ),
         amount,
     )?;
@@ -57,7 +57,7 @@ pub fn verify_collection_item_by_main<'info>(
     collection_metadata: AccountInfo<'info>,
     collection_edition: AccountInfo<'info>,
     // collection_authority_record: AccountInfo<'info>,
-    main_state: &Account<'info, MainState>,
+    main_state: &Box<Account<'info, MainState>>,
     mpl_program: AccountInfo<'info>,
     system_program: AccountInfo<'info>,
     sysvar_instructions: AccountInfo<'info>,
@@ -88,7 +88,7 @@ pub fn verify_collection_item_by_main<'info>(
             // collection_authority_record,
             sysvar_instructions,
         ],
-        &[&[SEED_MAIN_STATE, &[main_state._bump]]],
+        &[&[SEED_MAIN_STATE, &[main_state.bump]]],
     )?;
 
     Ok(())

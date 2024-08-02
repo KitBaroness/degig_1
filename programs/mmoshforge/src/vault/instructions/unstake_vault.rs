@@ -69,7 +69,7 @@ impl<'info> UnstakeVault<'info> {
             .vault
             .to_account_info()
         };
-        token::transfer(CpiContext::new(self.token_program.to_account_info(), cpi_accounts).with_signer(&[&[SEED_VAULT, self.stake_key.key().as_ref() ,self.mint.key().as_ref(), &[self.vault._bump]]]), value)?;
+        token::transfer(CpiContext::new(self.token_program.to_account_info(), cpi_accounts).with_signer(&[&[SEED_VAULT, self.stake_key.key().as_ref() ,self.mint.key().as_ref(), &[self.vault.bump]]]), value)?;
         Ok(())
     }
 }

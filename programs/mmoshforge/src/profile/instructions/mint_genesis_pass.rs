@@ -49,10 +49,9 @@ pub fn mint_genesis_pass(
         let user = ctx.accounts.user.to_account_info();
         input.set_value(main_state);
         main_state.owner = user.key();
-        main_state._bump = ctx.bumps.main_state;
+        main_state.bump = ctx.bumps.main_state;
 
         //NOTE: setup and validation
-        let main_state = &mut ctx.accounts.main_state;
         let profile_state = &mut ctx.accounts.profile_state;
         let collection_state = &mut ctx.accounts.collection_state;
 
@@ -79,10 +78,10 @@ pub fn mint_genesis_pass(
         //NOTE: minting
         ctx.accounts.mint(name, symbol, uri_hash)?;
     }
-    {
-        //NOTE: created mint collection verifiaction
-        ctx.accounts.verify_collection_item(ctx.program_id)?;
-    }
+    // {
+    //     //NOTE: created mint collection verifiaction
+    //     ctx.accounts.verify_collection_item(ctx.program_id)?;
+    // }
 
     Ok(())
 }
@@ -98,13 +97,6 @@ pub fn mint_genesis_pass(
 pub struct AMintPassByAdmin<'info> {
     #[account(mut)]
     pub user: Signer<'info>,
-
-    ///CHECK:
-    #[account(address = MPL_ID)]
-    pub mpl_program: AccountInfo<'info>,
-    pub token_program: Program<'info, Token>,
-    pub associated_token_program: Program<'info, AssociatedToken>,
-    pub system_program: Program<'info, System>,
 
     ///CHECK:
     #[account(
@@ -187,39 +179,18 @@ pub struct AMintPassByAdmin<'info> {
         seeds = [SEED_COLLECTION_STATE, collection.key().as_ref()],
         bump,
     )]
-    pub collection_state: Account<'info, CollectionState>,
-
-    ///CHECK:
-    #[account(
-        mut,
-        seeds=[
-            "metadata".as_bytes(),
-            MPL_ID.as_ref(),
-            collection.key().as_ref(),
-        ],
-        bump,
-        seeds::program = MPL_ID
-    )]
-    pub collection_metadata: AccountInfo<'info>,
-
-    ///CHECK:
-    #[account(
-        mut,
-        seeds=[
-            "metadata".as_bytes(),
-            MPL_ID.as_ref(),
-            collection.key().as_ref(),
-            "edition".as_bytes(),
-
-        ],
-        bump,
-        seeds::program = MPL_ID
-    )]
-    pub collection_edition: AccountInfo<'info>,
+    pub collection_state: Box<Account<'info, CollectionState>>,
 
     ///CHECK:
     #[account()]
-    pub sysvar_instructions: AccountInfo<'info>
+    pub sysvar_instructions: AccountInfo<'info>,
+
+    ///CHECK:
+    #[account(address = MPL_ID)]
+    pub mpl_program: AccountInfo<'info>,
+    pub token_program: Program<'info, Token>,
+    pub associated_token_program: Program<'info, AssociatedToken>,
+    pub system_program: Program<'info, System>,
 }
 
 impl<'info> AMintPassByAdmin<'info> {
@@ -237,7 +208,6 @@ impl<'info> AMintPassByAdmin<'info> {
         let mpl_program = self.mpl_program.to_account_info();
         let sysvar_instructions = self.sysvar_instructions.to_account_info();
         let main_state = &mut self.main_state;
-
         //mint a token
         let cpi_acounts = MintTo {
             mint: mint.to_account_info(),
@@ -304,54 +274,10 @@ impl<'info> AMintPassByAdmin<'info> {
                 sysvar_instructions,
             ],
             &[
-                &[SEED_MAIN_STATE, mint.key().as_ref(), &[self.main_state._bump]],
+                &[SEED_MAIN_STATE, mint.key().as_ref(), &[main_state.bump]],
             ],
         )?;
 
-        Ok(())
-    }
-
-    pub fn verify_collection_item(&mut self, program_id: &Pubkey) -> Result<()> {
-        let mint = self.profile.to_account_info();
-        let system_program = self.system_program.to_account_info();
-        let token_program = self.token_program.to_account_info();
-        let mpl_program = self.mpl_program.to_account_info();
-        let metadata = self.profile_metadata.to_account_info();
-        let parent_main_state = &mut self.parent_main_state;
-        let collection = self.collection.to_account_info();
-        let collection_metadata = self.collection_metadata.to_account_info();
-        let collection_edition = self.collection_edition.to_account_info();
-        // let collection_authority_record = self.collection_authority_record.to_account_info();
-        let sysvar_instructions = self.sysvar_instructions.to_account_info();
-
-        let ix = Verify {
-            collection_metadata: Some(collection_metadata.key()),
-            metadata: metadata.key(),
-            authority: parent_main_state.key(),
-            collection_mint: Some(collection.key()),
-            collection_master_edition: Some(collection_edition.key()),
-            system_program: system_program.key(),
-            sysvar_instructions: sysvar_instructions.key(),
-            // delegate_record: Some(collection_authority_record.key()),
-            delegate_record: None,
-        }
-        .instruction(VerifyInstructionArgs {verification_args:mpl_token_metadata::types::VerificationArgs::CollectionV1});
-    
-        invoke_signed(
-            &ix,
-            &[
-                metadata,
-                parent_main_state.to_account_info(),
-                collection,
-                collection_metadata,
-                collection_edition,
-                mpl_program,
-                system_program,
-                // collection_authority_record,
-                sysvar_instructions,
-            ],
-            &[&[SEED_MAIN_STATE, &[parent_main_state._bump]]],
-        )?;
         Ok(())
     }
 

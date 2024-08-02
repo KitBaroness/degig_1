@@ -24,5 +24,5 @@ pub struct AUpdateMainStateOwner<'info> {
         seeds = [SEED_MAIN_STATE],
         bump,
     )]
-    pub main_state: Account<'info, MainState>,
+    pub main_state: Box<Account<'info, MainState>>,
 }

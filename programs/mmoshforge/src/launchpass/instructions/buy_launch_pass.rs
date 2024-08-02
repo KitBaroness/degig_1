@@ -36,7 +36,7 @@ pub fn buy_launch_pass(ctx: Context<BuyLaunchPass>) -> Result<()> {
         CpiContext::new_with_signer(
             token_program,
             cpi_accounts,
-            &[&[SEED_LAUNCH_PASS, ctx.accounts.owner.key().as_ref(), ctx.accounts.mint.key().as_ref(), &[main_state._bump]]],
+            &[&[SEED_LAUNCH_PASS, ctx.accounts.owner.key().as_ref(), ctx.accounts.mint.key().as_ref(), &[main_state.bump]]],
         ),
         1,
     )?;

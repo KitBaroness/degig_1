@@ -9,7 +9,7 @@ pub struct LaunchPassState {
     pub distribution: MintingCostDistribution,
     pub redeem_date: u64,
     pub redeem_amount: u64,
-    pub _bump: u8
+    pub bump: u8
 }
 
 impl LaunchPassState {

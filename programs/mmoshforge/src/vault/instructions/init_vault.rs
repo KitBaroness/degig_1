@@ -14,7 +14,7 @@ pub fn init_vault(
         vault.owner = ctx.accounts.owner.key();
         vault.lock_date = lock_date;
         vault.mint = ctx.accounts.mint.key();
-        vault._bump = ctx.bumps.vault;
+        vault.bump = ctx.bumps.vault;
     }
     {
         ctx.accounts.init_stake_vault(value);

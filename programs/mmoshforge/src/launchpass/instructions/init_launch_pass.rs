@@ -28,7 +28,7 @@ pub fn init_launch_pass(
         launch_pass.redeem_amount = redeem_amount;
         launch_pass.cost = cost;
         launch_pass.distribution = distribution;
-        launch_pass._bump = ctx.bumps.launch_pass;
+        launch_pass.bump = ctx.bumps.launch_pass;
     }
     {
         ctx.accounts.init_launch(name, symbol, uri);
@@ -154,7 +154,7 @@ impl<'info> InitLaunchPass<'info> {
                 system_program.to_account_info(),
                 sysvar_instructions,
             ],
-            &[&[SEED_LAUNCH_PASS, user.key().as_ref(), self.mint.key().as_ref(), &[main_state._bump]]],
+            &[&[SEED_LAUNCH_PASS, user.key().as_ref(), self.mint.key().as_ref(), &[main_state.bump]]],
         )?;
         Ok(())
     }

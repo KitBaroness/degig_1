@@ -107,7 +107,7 @@ impl<'info> RedeemLaunchPass<'info> {
             .vault
             .to_account_info()
         };
-        token::transfer(CpiContext::new(self.token_program.to_account_info(), cpi_accounts).with_signer(&[&[SEED_VAULT, self.stake_key.key().as_ref() ,self.mint.key().as_ref(), &[self.vault._bump]]]), self.launc_pass_state.redeem_amount)?;
+        token::transfer(CpiContext::new(self.token_program.to_account_info(), cpi_accounts).with_signer(&[&[SEED_VAULT, self.stake_key.key().as_ref() ,self.mint.key().as_ref(), &[self.vault.bump]]]), self.launc_pass_state.redeem_amount)?;
         Ok(())
     }
     pub fn burn_launch_pass(&mut self) -> Result<()> {

@@ -75,14 +75,6 @@ pub fn mint_profile_by_at(
         //NOTE: minting
         ctx.accounts.mint(name, symbol, uri_hash)?;
     }
-    {
-        //NOTE: created mint collection verifiaction
-        ctx.accounts.verify_collection_item(ctx.program_id)?;
-    }
-
-    {
-        ctx.accounts.burn_activation_token(ctx.program_id)?;
-    }
     Ok(())
 }
 
@@ -105,28 +97,12 @@ pub struct AMintProfileByAt<'info> {
     pub associated_token_program: Program<'info, AssociatedToken>,
     pub system_program: Program<'info, System>,
 
-    ///CHECK:
-    #[account(address = main_state.opos_token)]
-    pub opos_token: AccountInfo<'info>,
-
-    ///CHECK:
-    #[account(
-        mut,
-        token::mint = activation_token,
-        token::authority = user,
-        constraint = user_activation_token_ata.amount >= 1 @ MyError::ActivationTokenNotFound,
-    )]
-    pub user_activation_token_ata: Box<Account<'info, TokenAccount>>,
-
     #[account(
         mut,
         seeds = [SEED_MAIN_STATE],
         bump,
     )]
     pub main_state: Box<Account<'info, MainState>>,
-
-    #[account(mut)]
-    pub activation_token: Box<Account<'info, Mint>>,
 
     ///CHECK:
     #[account(
@@ -183,18 +159,6 @@ pub struct AMintProfileByAt<'info> {
     )]
     pub profile_edition: AccountInfo<'info>,
 
-    // ///CHECK:
-    // #[account(
-    //     mut,
-    //     seeds=[
-    //         METADATA.as_ref(),
-    //         MPL_ID.as_ref(),
-    //         activation_token_state.parent_profile.as_ref(),
-    //     ],
-    //     bump,
-    //     seeds::program = MPL_ID
-    // )]
-    // pub parent_profile_metadata: AccountInfo<'info>,
     #[account(
         mut,
         seeds = [SEED_PROFILE_STATE, parent_profile.key().as_ref()],
@@ -207,37 +171,6 @@ pub struct AMintProfileByAt<'info> {
     pub collection: AccountInfo<'info>,
 
     ///CHECK:
-    #[account(
-        mut,
-        seeds=[
-            "metadata".as_bytes(),
-            MPL_ID.as_ref(),
-            collection.key().as_ref(),
-        ],
-        bump,
-        seeds::program = MPL_ID
-    )]
-    pub collection_metadata: AccountInfo<'info>,
-
-    ///CHECK:
-    #[account(
-        mut,
-        seeds=[
-            "metadata".as_bytes(),
-            MPL_ID.as_ref(),
-            collection.key().as_ref(),
-            "edition".as_bytes(),
-        ],
-        bump,
-        seeds::program = MPL_ID
-    )]
-    pub collection_edition: AccountInfo<'info>,
-
-    ///CHECK:
-    // #[account(address = ADDRESS_LOOKUP_TABLE_PROGRAM)]
-    // pub address_lookup_table_program: AccountInfo<'info>,
-
-    ///CHECK:
     #[account()]
     pub sysvar_instructions: AccountInfo<'info>,
 
@@ -246,109 +179,6 @@ pub struct AMintProfileByAt<'info> {
     pub parent_profile: Box<Account<'info, Mint>>,
 
 
-    //NOTE: profile minting cost distribution account
-
-    // Current profile holders
-    // ///CHECK:
-    // pub current_parent_profile_holder: AccountInfo<'info>,
-    // ///CHECK:
-    // pub current_grand_parent_profile_holder: AccountInfo<'info>,
-    // ///CHECK:
-    // pub current_great_grand_parent_profile_holder: AccountInfo<'info>,
-    // ///CHECK:
-    // pub current_ggreat_grand_parent_profile_holder: AccountInfo<'info>,
-    // ///CHECK:
-    // pub current_genesis_profile_holder: AccountInfo<'info>,
-
-    // // Current Profile holder's opos token ata
-    // #[account(
-    //     mut,
-    //     token::mint = opos_token,
-    //     token::authority = user,
-    //     constraint= user_opos_ata.amount >= main_state.profile_minting_cost @ MyError::NotEnoughTokenToMint
-    // )]
-    // pub user_opos_ata: Box<Account<'info, TokenAccount>>,
-    // ///CHECK:
-    // #[account(
-    //     mut,
-    //     constraint = init_ata_if_needed(
-    //         opos_token.to_account_info(),
-    //         parent_profile_holder_opos_ata.to_account_info(),
-    //         current_parent_profile_holder.to_account_info(),
-    //         user.to_account_info(),
-    //         token_program.to_account_info(),
-    //         system_program.to_account_info(),
-    //         associated_token_program.to_account_info(),
-    //     ) == Ok(())
-    //     // token::mint = opos_token,
-    //     // token::authority = current_parent_profile_holder,
-    // )]
-    // // pub parent_profile_holder_opos_ata: Box<Account<'info, TokenAccount>>,
-    // pub parent_profile_holder_opos_ata: AccountInfo<'info>,
-    // ///CHECK:
-    // #[account(
-    //     mut,
-    //     constraint = init_ata_if_needed(
-    //         opos_token.to_account_info(),
-    //         grand_parent_profile_holder_opos_ata.to_account_info(),
-    //         current_grand_parent_profile_holder.to_account_info(),
-    //         user.to_account_info(),
-    //         token_program.to_account_info(),
-    //         system_program.to_account_info(),
-    //         associated_token_program.to_account_info(),
-    //     ) == Ok(())
-    //     // token::mint = opos_token,
-    //     // token::authority = current_grand_parent_profile_holder,
-    // )]
-    // pub grand_parent_profile_holder_opos_ata: AccountInfo<'info>,
-    // ///CHECK:
-    // #[account(
-    //     mut,
-    //     constraint = init_ata_if_needed(
-    //         opos_token.to_account_info(),
-    //         great_grand_parent_profile_holder_opos_ata.to_account_info(),
-    //         current_great_grand_parent_profile_holder.to_account_info(),
-    //         user.to_account_info(),
-    //         token_program.to_account_info(),
-    //         system_program.to_account_info(),
-    //         associated_token_program.to_account_info(),
-    //     ) == Ok(())
-    //     // token::mint = opos_token,
-    //     // token::authority = current_great_grand_parent_profile_holder,
-    // )]
-    // pub great_grand_parent_profile_holder_opos_ata: AccountInfo<'info>,
-    // ///CHECK:
-    // #[account(
-    //     mut,
-    //     constraint = init_ata_if_needed(
-    //         opos_token.to_account_info(),
-    //         ggreat_grand_parent_profile_holder_opos_ata.to_account_info(),
-    //         current_ggreat_grand_parent_profile_holder.to_account_info(),
-    //         user.to_account_info(),
-    //         token_program.to_account_info(),
-    //         system_program.to_account_info(),
-    //         associated_token_program.to_account_info(),
-    //     ) == Ok(())
-    //     // token::mint = opos_token,
-    //     // token::authority = current_ggreat_grand_parent_profile_holder,
-    // )]
-    // pub ggreat_grand_parent_profile_holder_opos_ata: AccountInfo<'info>,
-    // ///CHECK:
-    // #[account(
-    //     mut,
-    //     constraint = init_ata_if_needed(
-    //         opos_token.to_account_info(),
-    //         genesis_profile_holder_opos_ata.to_account_info(),
-    //         current_genesis_profile_holder.to_account_info(),
-    //         user.to_account_info(),
-    //         token_program.to_account_info(),
-    //         system_program.to_account_info(),
-    //         associated_token_program.to_account_info(),
-    //     ) == Ok(())
-    //     // token::mint = opos_token,
-    //     // token::authority = current_genesis_profile_holder,
-    // )]
-    // pub genesis_profile_holder_opos_ata: AccountInfo<'info>,
 }
 
 impl<'info> AMintProfileByAt<'info> {
@@ -483,54 +313,10 @@ impl<'info> AMintProfileByAt<'info> {
                 sysvar_instructions,
             ],
             &[
-                &[SEED_MAIN_STATE, &[self.main_state._bump]],
+                &[SEED_MAIN_STATE, &[self.main_state.bump]],
             ],
         )?;
 
-        Ok(())
-    }
-
-    pub fn verify_collection_item(&mut self, program_id: &Pubkey) -> Result<()> {
-        let system_program = self.system_program.to_account_info();
-        let token_program = self.token_program.to_account_info();
-        let mpl_program = self.mpl_program.to_account_info();
-        let metadata = self.profile_metadata.to_account_info();
-        let main_state = &mut self.main_state;
-        let collection = self.collection.to_account_info();
-        let collection_metadata = self.collection_metadata.to_account_info();
-        let collection_edition = self.collection_edition.to_account_info();
-        // let collection_authority_record = self.collection_authority_record.to_account_info();
-        let sysvar_instructions = self.sysvar_instructions.to_account_info();
-
-        verify_collection_item_by_main(
-            metadata,
-            collection,
-            collection_metadata,
-            collection_edition,
-            main_state,
-            mpl_program,
-            system_program,
-            sysvar_instructions,
-        )?;
-        Ok(())
-    }
-
-    pub fn burn_activation_token(&mut self, program_id: &Pubkey) -> Result<()> {
-        let mint = self.activation_token.to_account_info();
-        let user = self.user.to_account_info();
-        let user_activation_token_ata = self.user_activation_token_ata.to_account_info();
-        let system_program = self.system_program.to_account_info();
-        let token_program = self.token_program.to_account_info();
-        let mpl_program = self.mpl_program.to_account_info();
-        let sysvar_instructions = self.sysvar_instructions.to_account_info();
-
-        let cpi_accounts = Burn {
-            mint,
-            from: user_activation_token_ata,
-            authority: user,
-        };
-
-        token::burn(CpiContext::new(token_program, cpi_accounts), 1)?;
         Ok(())
     }
 

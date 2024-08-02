@@ -28,7 +28,6 @@ pub fn mint_activation_token(ctx: Context<AMintActivationToken>, amount: u64) ->
     let token_program = ctx.accounts.token_program.to_account_info();
     let profile_state = &mut ctx.accounts.profile_state;
     profile_state.total_minted_sft += amount;
-
     let cpi_accounts = MintTo {
         mint,
         to: ctx.accounts.receiver_ata.to_account_info(),
@@ -39,7 +38,7 @@ pub fn mint_activation_token(ctx: Context<AMintActivationToken>, amount: u64) ->
         CpiContext::new_with_signer(
             token_program,
             cpi_accounts,
-            &[&[SEED_MAIN_STATE, &[main_state._bump]]],
+            &[&[SEED_MAIN_STATE, &[main_state.bump]]],
         ),
         amount,
     )?;
@@ -48,7 +47,6 @@ pub fn mint_activation_token(ctx: Context<AMintActivationToken>, amount: u64) ->
     let token_program = ctx.accounts.token_program.to_account_info();
     let sender_ata = ctx.accounts.user_opos_ata.to_account_info();
     let authority = ctx.accounts.minter.to_account_info();
-    let main_state = &mut ctx.accounts.main_state;
     let cost = main_state.invitation_minting_cost * amount;
 
     // Genesis

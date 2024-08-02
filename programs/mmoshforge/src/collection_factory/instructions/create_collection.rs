@@ -33,11 +33,11 @@ pub fn create_collection(
     {
         // Setup
         let collection_id = ctx.accounts.collection.key();
+        let collection_state = &mut ctx.accounts.collection_state;
         if collection_type == "profile" {
             ctx.accounts.main_state.profile_collection = collection_id;
         }
 
-        ctx.accounts.collection_state.collection_id = collection_id;
     }
     {
         ctx.accounts.mint(name, symbol, uri, collection_type.to_string())?;
@@ -88,7 +88,7 @@ pub struct ACreateCollection<'info> {
         bump,
         space = 8 + CollectionState::MAX_SIZE
     )]
-    pub collection_state: Account<'info, CollectionState>,
+    pub collection_state: Box<Account<'info, CollectionState>>,
 
     ///CHECK:
     #[account(
@@ -190,7 +190,6 @@ impl<'info> ACreateCollection<'info> {
         let mpl_program = self.mpl_program.to_account_info();
         let sysvar_instructions = self.sysvar_instructions.to_account_info();
         let main_state = &mut self.main_state;
-
         let asset_data;
 
         if collection_type != "root" {
@@ -277,7 +276,7 @@ impl<'info> ACreateCollection<'info> {
                 sysvar_instructions,
                 main_state.to_account_info(),
             ],
-            &[&[SEED_MAIN_STATE, &[main_state._bump]]],
+            &[&[SEED_MAIN_STATE, &[main_state.bump]]],
         )?;
 
         Ok(())
@@ -318,7 +317,7 @@ impl<'info> ACreateCollection<'info> {
                 system_program,
                 sysvar_instructions,
             ],
-            &[&[SEED_MAIN_STATE, &[main_state._bump]]],
+            &[&[SEED_MAIN_STATE, &[main_state.bump]]],
         )?;
         Ok(())
     }

@@ -10,7 +10,7 @@ pub fn init_main_state(ctx: Context<AInitMainState>, input: MainStateInput) -> R
     let owner = ctx.accounts.owner.to_account_info();
     input.set_value(main_state);
     main_state.owner = owner.key();
-    main_state._bump = ctx.bumps.main_state;
+    main_state.bump = ctx.bumps.main_state;
 
     Ok(())
 }
@@ -27,7 +27,7 @@ pub struct AInitMainState<'info> {
         bump,
         space = 8 + MainState::MAX_SIZE, 
     )]
-    pub main_state: Account<'info, MainState>,
+    pub main_state: Box<Account<'info, MainState>>,
 
     pub system_program: Program<'info, System>,
 }

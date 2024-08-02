@@ -35,7 +35,7 @@ pub fn create_pass_token(ctx: Context<ACreatePassToken>, amount: u64) -> Result<
         CpiContext::new_with_signer(
             token_program.clone(),
             cpi_accounts,
-            &[&[SEED_MAIN_STATE, ctx.accounts.project.key().as_ref(), &[main_state._bump]]],
+            &[&[SEED_MAIN_STATE, ctx.accounts.project.key().as_ref(), &[main_state.bump]]],
         ),
         amount,
     )?;

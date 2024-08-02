@@ -8,13 +8,14 @@ pub mod collection_factory;
 pub mod profile;
 pub mod curve;
 
+pub mod vault;
+pub mod launchpass;
+
 pub mod constants;
 pub mod error;
 pub mod other_states;
 pub mod utils;
 
-pub mod vault;
-pub mod launchpass;
 
 use _main::*;
 use activation_token::*;
@@ -25,6 +26,7 @@ use curve::*;
 
 use vault::*;
 use launchpass::*;
+
 use other_states::MintingCostDistribution;
 
 #[program]
@@ -71,6 +73,20 @@ pub mod mmoshforge {
         collection_factory::create_collection(ctx, name, symbol, uri, collection_type)?;
         Ok(())
     }
+
+    pub fn mint_burn_at(
+      ctx: Context<AMintBurnByAt>,
+  ) -> Result<()> {
+      profile::mint_burn_at(ctx)?;
+      Ok(())
+  }
+
+  pub fn mint_collection_verify_at(
+    ctx: Context<AMintCollectionVerifyAt>,
+  ) -> Result<()> {
+      profile::mint_collection_verify_at(ctx)?;
+      Ok(())
+  }
 
 
     pub fn mint_genesis_profile(
@@ -236,41 +252,40 @@ pub mod mmoshforge {
       }
 
       pub fn init_vault(ctx: Context<InitVault>, lock_date: u64, value: u64) -> Result<()> {
-         vault::instructions::init_vault(ctx, lock_date, value)
-      }
-
-      pub fn stake_vault(ctx: Context<StakeVault>, value: u64) -> Result<()> {
-        vault::instructions::stake_vault(ctx, value)
-      }
-
-      pub fn unstake_vault(ctx: Context<UnstakeVault>, value: u64) -> Result<()> {
-        vault::instructions::unstake_vault(ctx, value)
-      }
-
-      pub fn init_launch_pass(
-        ctx: Context<InitLaunchPass>, 
-        redeem_amount: u64,
-        redeem_date: u64,
-        cost: u64,
-        distribution: MintingCostDistribution,
-        name: String,
-        symbol: String,
-        uri: String
-      ) -> Result<()> {
-        launchpass::instructions::init_launch_pass(ctx, redeem_amount, redeem_date, cost, distribution, name, symbol, uri)
+        vault::instructions::init_vault(ctx, lock_date, value)
      }
 
-     pub fn buy_launch_pass(
-      ctx: Context<BuyLaunchPass>, 
+     pub fn stake_vault(ctx: Context<StakeVault>, value: u64) -> Result<()> {
+       vault::instructions::stake_vault(ctx, value)
+     }
+
+     pub fn unstake_vault(ctx: Context<UnstakeVault>, value: u64) -> Result<()> {
+       vault::instructions::unstake_vault(ctx, value)
+     }
+
+     pub fn init_launch_pass(
+       ctx: Context<InitLaunchPass>, 
+       redeem_amount: u64,
+       redeem_date: u64,
+       cost: u64,
+       distribution: MintingCostDistribution,
+       name: String,
+       symbol: String,
+       uri: String
      ) -> Result<()> {
-      launchpass::instructions::buy_launch_pass(ctx)
-     }
+       launchpass::instructions::init_launch_pass(ctx, redeem_amount, redeem_date, cost, distribution, name, symbol, uri)
+    }
+
+    pub fn buy_launch_pass(
+     ctx: Context<BuyLaunchPass>, 
+    ) -> Result<()> {
+     launchpass::instructions::buy_launch_pass(ctx)
+    }
 
 
-     pub fn redeem_launch_pass(
-      ctx: Context<RedeemLaunchPass>, 
-     ) -> Result<()> {
-      launchpass::instructions::redeem_launch_pass(ctx)
-     }
-
+    pub fn redeem_launch_pass(
+     ctx: Context<RedeemLaunchPass>, 
+    ) -> Result<()> {
+     launchpass::instructions::redeem_launch_pass(ctx)
+    }
 }

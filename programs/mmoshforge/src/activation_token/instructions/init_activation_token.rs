@@ -277,7 +277,7 @@ impl<'info> AInitActivationToken<'info> {
                 system_program.to_account_info(),
                 sysvar_instructions,
             ],
-            &[&[SEED_MAIN_STATE, &[main_state._bump]]],
+            &[&[SEED_MAIN_STATE, &[main_state.bump]]],
         )?;
         
         Ok(())

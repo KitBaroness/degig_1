@@ -284,7 +284,7 @@ impl<'info> AInitPassToken<'info> {
                 system_program.to_account_info(),
                 sysvar_instructions,
             ],
-            &[&[SEED_MAIN_STATE, self.project.key().as_ref(), &[main_state._bump]]],
+            &[&[SEED_MAIN_STATE, self.project.key().as_ref(), &[main_state.bump]]],
         )?;
         
         Ok(())
@@ -330,7 +330,7 @@ impl<'info> AInitPassToken<'info> {
                 // collection_authority_record,
                 sysvar_instructions,
             ],
-            &[&[SEED_MAIN_STATE, &[main_state._bump]]],
+            &[&[SEED_MAIN_STATE, &[main_state.bump]]],
         )?;
         
         Ok(())

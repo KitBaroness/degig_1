@@ -14,7 +14,7 @@ pub struct MainState {
     pub minting_cost_distribution: MintingCostDistribution,
     pub trading_price_distribution: TradingPriceDistribution,
     pub seller_fee_basis_points: u16, //NOTE: may be later change
-    pub _bump: u8,
+    pub bump: u8,
     pub total_minted_profile: u64,
     pub profile_collection: Pubkey,
     pub genesis_profile: Pubkey,

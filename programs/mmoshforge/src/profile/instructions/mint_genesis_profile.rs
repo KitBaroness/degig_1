@@ -72,13 +72,6 @@ pub fn mint_genesis_profile(
         //NOTE: minting
         ctx.accounts.mint(input.name, input.symbol, input.uri)?;
     }
-    {
-        //NOTE: created mint collection verifiaction
-        ctx.accounts.verify_collection_item(ctx.program_id)?;
-    }
-    {
-        // ctx.accounts.approve_sub_collection_authority_to_main()?;
-    }
     Ok(())
 }
 
@@ -155,64 +148,7 @@ pub struct AMintProfileByAdmin<'info> {
         seeds = [SEED_COLLECTION_STATE, collection.key().as_ref()],
         bump,
     )]
-    pub collection_state: Account<'info, CollectionState>,
-
-    ///CHECK:
-    #[account(
-        mut,
-        seeds=[
-            "metadata".as_bytes(),
-            MPL_ID.as_ref(),
-            collection.key().as_ref(),
-        ],
-        bump,
-        seeds::program = MPL_ID
-    )]
-    pub collection_metadata: AccountInfo<'info>,
-
-    ///CHECK:
-    #[account(
-        mut,
-        seeds=[
-            "metadata".as_bytes(),
-            MPL_ID.as_ref(),
-            collection.key().as_ref(),
-            "edition".as_bytes(),
-        ],
-        bump,
-        seeds::program = MPL_ID
-    )]
-    pub collection_edition: AccountInfo<'info>,
-
-    ///CHECK:
-    #[account(
-        mut,
-        seeds = [
-            "metadata".as_bytes(),
-            MPL_ID.as_ref(),
-            collection.key().as_ref(),
-            "collection_authority".as_bytes(),
-            main_state.key().as_ref(),
-        ],
-        bump,
-        seeds::program = MPL_ID
-    )]
-    pub collection_authority_record: AccountInfo<'info>,
-
-    ///CHECK:
-    #[account(
-        mut,
-        seeds = [
-            "metadata".as_bytes(),
-            MPL_ID.as_ref(),
-            profile.key().as_ref(),
-            "collection_authority".as_bytes(),
-            main_state.key().as_ref(),
-        ],
-        bump,
-        seeds::program = MPL_ID
-    )]
-    pub sub_collection_authority_record: AccountInfo<'info>,
+    pub collection_state: Box<Account<'info, CollectionState>>,
 
     //PERF: not sure parent profile nft collection verification are require or not (think it
     //already secure)
@@ -304,78 +240,10 @@ impl<'info> AMintProfileByAdmin<'info> {
                 system_program.clone(),
                 sysvar_instructions.clone(),
             ],
-            &[&[SEED_MAIN_STATE, &[main_state._bump]]],
+            &[&[SEED_MAIN_STATE, &[main_state.bump]]],
         )?;
 
         Ok(())
     }
 
-    pub fn verify_collection_item(&mut self, program_id: &Pubkey) -> Result<()> {
-        let mint = self.profile.to_account_info();
-        let admin = self.admin.to_account_info();
-        let system_program = self.system_program.to_account_info();
-        let token_program = self.token_program.to_account_info();
-        let mpl_program = self.mpl_program.to_account_info();
-        let metadata = self.profile_metadata.to_account_info();
-        let main_state = &mut self.main_state;
-        let collection = self.collection.to_account_info();
-        let collection_metadata = self.collection_metadata.to_account_info();
-        let collection_edition = self.collection_edition.to_account_info();
-        // let collection_authority_record = self.collection_authority_record.to_account_info();
-        let sysvar_instructions = self.sysvar_instructions.to_account_info();
-
-        verify_collection_item_by_main(
-            metadata,
-            collection,
-            collection_metadata,
-            collection_edition,
-            // collection_authority_record,
-            main_state,
-            mpl_program,
-            system_program,
-            sysvar_instructions,
-        )?;
-        Ok(())
-    }
-
-    pub fn approve_sub_collection_authority_to_main(&mut self) -> Result<()> {
-        let mint = self.collection.to_account_info();
-        let payer = self.admin.to_account_info();
-        let system_program = self.system_program.to_account_info();
-        let mpl_program = self.mpl_program.to_account_info();
-        let metadata = self.collection_metadata.to_account_info();
-        let mpl_program = self.mpl_program.to_account_info();
-        let sysvar_instructions = self.sysvar_instructions.to_account_info();
-        let main_state = &mut self.main_state;
-        let sub_collection_authority_record =
-            self.sub_collection_authority_record.to_account_info();
-
-
-        let ix = ApproveCollectionAuthority{
-            collection_authority_record: sub_collection_authority_record.key(),
-            new_collection_authority: main_state.key(),
-            update_authority: main_state.key(),
-            payer: payer.key(),
-            metadata: metadata.key(),
-            mint: mint.key(),
-            system_program: system_program.key(),
-            rent: None
-        }.instruction();
-
-        invoke_signed(
-            &ix,
-            &[
-                mint,
-                payer,
-                main_state.to_account_info(),
-                sub_collection_authority_record,
-                metadata,
-                mpl_program,
-                system_program,
-                sysvar_instructions,
-            ],
-            &[&[SEED_MAIN_STATE, &[main_state._bump]]],
-        )?;
-        Ok(())
-    }
 }
