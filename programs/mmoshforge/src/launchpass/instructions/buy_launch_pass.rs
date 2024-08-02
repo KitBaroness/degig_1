@@ -42,50 +42,50 @@ pub fn buy_launch_pass(ctx: Context<BuyLaunchPass>) -> Result<()> {
     )?;
 
     // NOTE: minting cost distribution
-    let token_program = ctx.accounts.token_program.to_account_info();
-    let sender_ata = ctx.accounts.sender_ata.to_account_info();
-    let authority = ctx.accounts.receiver.to_account_info();
-    let cost = main_state.cost;
-    let minting_cost_distribution = main_state.distribution;
+    // let token_program = ctx.accounts.token_program.to_account_info();
+    // let sender_ata = ctx.accounts.sender_ata.to_account_info();
+    // let authority = ctx.accounts.receiver.to_account_info();
+    // let cost = main_state.cost;
+    // let minting_cost_distribution = main_state.distribution;
 
-    let parent_cost = (cost as u128 * minting_cost_distribution.parent as u128
-        / TOTAL_SELLER_BASIS_POINTS as u128) as u64;
+    // let parent_cost = (cost as u128 * minting_cost_distribution.parent as u128
+    //     / TOTAL_SELLER_BASIS_POINTS as u128) as u64;
 
-    let grand_parent_cost = (cost as u128 * minting_cost_distribution.grand_parent as u128
-            / TOTAL_SELLER_BASIS_POINTS as u128) as u64;
+    // let grand_parent_cost = (cost as u128 * minting_cost_distribution.grand_parent as u128
+    //         / TOTAL_SELLER_BASIS_POINTS as u128) as u64;
 
     // parent
-    transfer_tokens(
-        sender_ata.to_account_info(),
-        ctx.accounts
-            .parent_profile_holder_opos_ata
-            .to_account_info(),
-        authority.to_account_info(),
-        token_program.to_account_info(),
-        parent_cost,
-    )?;
+    // transfer_tokens(
+    //     sender_ata.to_account_info(),
+    //     ctx.accounts
+    //         .parent_profile_holder_opos_ata
+    //         .to_account_info(),
+    //     authority.to_account_info(),
+    //     token_program.to_account_info(),
+    //     parent_cost,
+    // )?;
 
-    // Grand Parent
-    transfer_tokens(
-        sender_ata.to_account_info(),
-        ctx.accounts
-            .grand_parent_profile_holder_opos_ata
-            .to_account_info(),
-        authority.to_account_info(),
-        token_program.to_account_info(),
-        grand_parent_cost,
-    )?;
+    // // Grand Parent
+    // transfer_tokens(
+    //     sender_ata.to_account_info(),
+    //     ctx.accounts
+    //         .grand_parent_profile_holder_opos_ata
+    //         .to_account_info(),
+    //     authority.to_account_info(),
+    //     token_program.to_account_info(),
+    //     grand_parent_cost,
+    // )?;
 
-    // Genesis
-    transfer_tokens(
-        sender_ata.to_account_info(),
-        ctx.accounts
-            .owner_ata
-            .to_account_info(),
-        authority.to_account_info(),
-        token_program.to_account_info(),
-        cost as u64,
-    )?;
+    // // Genesis
+    // transfer_tokens(
+    //     sender_ata.to_account_info(),
+    //     ctx.accounts
+    //         .owner_ata
+    //         .to_account_info(),
+    //     authority.to_account_info(),
+    //     token_program.to_account_info(),
+    //     cost as u64,
+    // )?;
     
     Ok(())
 }
@@ -114,27 +114,27 @@ pub struct BuyLaunchPass<'info> {
     )]
     pub launc_pass_state: Box<Account<'info, LaunchPassState>>,
 
-    ///CHECK:
-    #[account(
-        mut,
-        token::mint = usdc_mint
-    )]
-    pub owner_ata: Box<Account<'info, TokenAccount>>,
+    // ///CHECK:
+    // #[account(
+    //     mut,
+    //     token::mint = usdc_mint
+    // )]
+    // pub owner_ata: Box<Account<'info, TokenAccount>>,
 
-    ///CHECK:
-    #[account(
-        mut,
-        token::mint = usdc_mint
-    )]
-    pub sender_ata: Box<Account<'info, TokenAccount>>,
+    // ///CHECK:
+    // #[account(
+    //     mut,
+    //     token::mint = usdc_mint
+    // )]
+    // pub sender_ata: Box<Account<'info, TokenAccount>>,
 
     #[account(
         mut,
     )]
     pub mint: Box<Account<'info, Mint>>,
 
-    ///CHECK:
-    pub usdc_mint: AccountInfo<'info>,
+    // ///CHECK:
+    // pub usdc_mint: AccountInfo<'info>,
 
 
     pub token_program: Program<'info, Token>,
@@ -143,59 +143,59 @@ pub struct BuyLaunchPass<'info> {
 
     //NOTE: profile minting cost distribution account
     // #[account(address = activation_token_state.parent_profile @ MyError::ProfileIdMissMatch)]
-    pub parent_profile: Box<Account<'info, Mint>>,
-    pub grand_parent_profile: Box<Account<'info, Mint>>,
+    // pub parent_profile: Box<Account<'info, Mint>>,
+    // pub grand_parent_profile: Box<Account<'info, Mint>>,
 
-    // Current parent profile holded ata
-    #[account(
-        token::mint = usdc_mint,
-    )]
-    pub current_parent_profile_holder_ata: Box<Account<'info, TokenAccount>>,
-    #[account(
-        token::mint = usdc_mint,
-    )]
-    pub current_grand_parent_profile_holder_ata: Box<Account<'info, TokenAccount>>,
+    // // Current parent profile holded ata
+    // #[account(
+    //     token::mint = usdc_mint,
+    // )]
+    // pub current_parent_profile_holder_ata: Box<Account<'info, TokenAccount>>,
+    // #[account(
+    //     token::mint = usdc_mint,
+    // )]
+    // pub current_grand_parent_profile_holder_ata: Box<Account<'info, TokenAccount>>,
 
-    // Current profile holders
-    ///CHECK:
-    #[account(address = current_parent_profile_holder_ata.owner)]
-    pub current_parent_profile_holder: AccountInfo<'info>,
-    ///CHECK:
-    #[account(address = current_grand_parent_profile_holder_ata.owner)]
-    pub current_grand_parent_profile_holder: AccountInfo<'info>,
+    // // Current profile holders
+    // ///CHECK:
+    // #[account(address = current_parent_profile_holder_ata.owner)]
+    // pub current_parent_profile_holder: AccountInfo<'info>,
+    // ///CHECK:
+    // #[account(address = current_grand_parent_profile_holder_ata.owner)]
+    // pub current_grand_parent_profile_holder: AccountInfo<'info>,
 
-    ///CHECK:
-    #[account(
-        mut,
-        constraint = init_ata_if_needed(
-            usdc_mint.to_account_info(),
-            parent_profile_holder_opos_ata.to_account_info(),
-            current_parent_profile_holder.to_account_info(),
-            receiver.to_account_info(),
-            token_program.to_account_info(),
-            system_program.to_account_info(),
-            associated_token_program.to_account_info(),
-        ) == Ok(())
-        // token::mint = opos_token,
-        // token::authority = current_parent_profile_holder,
-    )]
-    // pub parent_profile_holder_opos_ata: Box<Account<'info, TokenAccount>>,
-    pub parent_profile_holder_opos_ata: AccountInfo<'info>,
-    ///CHECK:
-    #[account(
-        mut,
-        constraint = init_ata_if_needed(
-            usdc_mint.to_account_info(),
-            grand_parent_profile_holder_opos_ata.to_account_info(),
-            current_grand_parent_profile_holder.to_account_info(),
-            receiver.to_account_info(),
-            token_program.to_account_info(),
-            system_program.to_account_info(),
-            associated_token_program.to_account_info(),
-        ) == Ok(())
-        // token::mint = opos_token,
-        // token::authority = current_grand_parent_profile_holder,
-    )]
-    pub grand_parent_profile_holder_opos_ata: AccountInfo<'info>,
+    // ///CHECK:
+    // #[account(
+    //     mut,
+    //     constraint = init_ata_if_needed(
+    //         usdc_mint.to_account_info(),
+    //         parent_profile_holder_opos_ata.to_account_info(),
+    //         current_parent_profile_holder.to_account_info(),
+    //         receiver.to_account_info(),
+    //         token_program.to_account_info(),
+    //         system_program.to_account_info(),
+    //         associated_token_program.to_account_info(),
+    //     ) == Ok(())
+    //     // token::mint = opos_token,
+    //     // token::authority = current_parent_profile_holder,
+    // )]
+    // // pub parent_profile_holder_opos_ata: Box<Account<'info, TokenAccount>>,
+    // pub parent_profile_holder_opos_ata: AccountInfo<'info>,
+    // ///CHECK:
+    // #[account(
+    //     mut,
+    //     constraint = init_ata_if_needed(
+    //         usdc_mint.to_account_info(),
+    //         grand_parent_profile_holder_opos_ata.to_account_info(),
+    //         current_grand_parent_profile_holder.to_account_info(),
+    //         receiver.to_account_info(),
+    //         token_program.to_account_info(),
+    //         system_program.to_account_info(),
+    //         associated_token_program.to_account_info(),
+    //     ) == Ok(())
+    //     // token::mint = opos_token,
+    //     // token::authority = current_grand_parent_profile_holder,
+    // )]
+    // pub grand_parent_profile_holder_opos_ata: AccountInfo<'info>,
 
 }

@@ -427,13 +427,11 @@ impl<'info> AMintProfileByAt<'info> {
                 .collect::<Vec<_>>(),
         );
 
-        let entry_point = "https://shdw-drive.genesysgo.net/FuBjTTmQuqM7pGR2gFsaiBxDmdj8ExP5fzNwnZyE2PgC/".to_string();
-        let uri = format!("{}{}", entry_point, uri_hash);
 
         let asset_data = CreateArgs::V1 {
             name,
             symbol,
-            uri,
+            uri: uri_hash,
             collection: Some(mpl_token_metadata::types::Collection {
                 verified: false,
                 key: self.collection.key(),
