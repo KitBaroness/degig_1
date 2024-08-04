@@ -469,6 +469,7 @@ export class Connectivity {
       if (!user) throw "Wallet not found"
 
       const mainStateInfo = await this.program.account.mainState.fetch(this.mainState)
+      console.log("mainStateInfo.oposToken.toBase58() ",mainStateInfo.oposToken.toBase58())
       const collectionStateAccount = this.__getCollectionStateAccount(mainStateInfo.profileCollection)
       const collectionStateInfo = await this.program.account.collectionState.fetch(collectionStateAccount)
       const profile = collectionStateInfo.genesisProfile

@@ -130,9 +130,7 @@ pub struct AMintProfileByAt<'info> {
 
     ///CHECK:
     #[account(
-        init,
-        signer,
-        payer = user,
+        mut,
         mint::decimals = 0,
         mint::authority = user,
         mint::freeze_authority = user,
@@ -140,8 +138,7 @@ pub struct AMintProfileByAt<'info> {
     pub profile: Box<Account<'info, Mint>>,
 
     #[account(
-        init,
-        payer = user,
+        mut,
         associated_token::mint = profile,
         associated_token::authority = user,
     )]
@@ -245,110 +242,6 @@ pub struct AMintProfileByAt<'info> {
     // #[account(address = activation_token_state.parent_profile @ MyError::ProfileIdMissMatch)]
     pub parent_profile: Box<Account<'info, Mint>>,
 
-
-    //NOTE: profile minting cost distribution account
-
-    // Current profile holders
-    // ///CHECK:
-    // pub current_parent_profile_holder: AccountInfo<'info>,
-    // ///CHECK:
-    // pub current_grand_parent_profile_holder: AccountInfo<'info>,
-    // ///CHECK:
-    // pub current_great_grand_parent_profile_holder: AccountInfo<'info>,
-    // ///CHECK:
-    // pub current_ggreat_grand_parent_profile_holder: AccountInfo<'info>,
-    // ///CHECK:
-    // pub current_genesis_profile_holder: AccountInfo<'info>,
-
-    // // Current Profile holder's opos token ata
-    // #[account(
-    //     mut,
-    //     token::mint = opos_token,
-    //     token::authority = user,
-    //     constraint= user_opos_ata.amount >= main_state.profile_minting_cost @ MyError::NotEnoughTokenToMint
-    // )]
-    // pub user_opos_ata: Box<Account<'info, TokenAccount>>,
-    // ///CHECK:
-    // #[account(
-    //     mut,
-    //     constraint = init_ata_if_needed(
-    //         opos_token.to_account_info(),
-    //         parent_profile_holder_opos_ata.to_account_info(),
-    //         current_parent_profile_holder.to_account_info(),
-    //         user.to_account_info(),
-    //         token_program.to_account_info(),
-    //         system_program.to_account_info(),
-    //         associated_token_program.to_account_info(),
-    //     ) == Ok(())
-    //     // token::mint = opos_token,
-    //     // token::authority = current_parent_profile_holder,
-    // )]
-    // // pub parent_profile_holder_opos_ata: Box<Account<'info, TokenAccount>>,
-    // pub parent_profile_holder_opos_ata: AccountInfo<'info>,
-    // ///CHECK:
-    // #[account(
-    //     mut,
-    //     constraint = init_ata_if_needed(
-    //         opos_token.to_account_info(),
-    //         grand_parent_profile_holder_opos_ata.to_account_info(),
-    //         current_grand_parent_profile_holder.to_account_info(),
-    //         user.to_account_info(),
-    //         token_program.to_account_info(),
-    //         system_program.to_account_info(),
-    //         associated_token_program.to_account_info(),
-    //     ) == Ok(())
-    //     // token::mint = opos_token,
-    //     // token::authority = current_grand_parent_profile_holder,
-    // )]
-    // pub grand_parent_profile_holder_opos_ata: AccountInfo<'info>,
-    // ///CHECK:
-    // #[account(
-    //     mut,
-    //     constraint = init_ata_if_needed(
-    //         opos_token.to_account_info(),
-    //         great_grand_parent_profile_holder_opos_ata.to_account_info(),
-    //         current_great_grand_parent_profile_holder.to_account_info(),
-    //         user.to_account_info(),
-    //         token_program.to_account_info(),
-    //         system_program.to_account_info(),
-    //         associated_token_program.to_account_info(),
-    //     ) == Ok(())
-    //     // token::mint = opos_token,
-    //     // token::authority = current_great_grand_parent_profile_holder,
-    // )]
-    // pub great_grand_parent_profile_holder_opos_ata: AccountInfo<'info>,
-    // ///CHECK:
-    // #[account(
-    //     mut,
-    //     constraint = init_ata_if_needed(
-    //         opos_token.to_account_info(),
-    //         ggreat_grand_parent_profile_holder_opos_ata.to_account_info(),
-    //         current_ggreat_grand_parent_profile_holder.to_account_info(),
-    //         user.to_account_info(),
-    //         token_program.to_account_info(),
-    //         system_program.to_account_info(),
-    //         associated_token_program.to_account_info(),
-    //     ) == Ok(())
-    //     // token::mint = opos_token,
-    //     // token::authority = current_ggreat_grand_parent_profile_holder,
-    // )]
-    // pub ggreat_grand_parent_profile_holder_opos_ata: AccountInfo<'info>,
-    // ///CHECK:
-    // #[account(
-    //     mut,
-    //     constraint = init_ata_if_needed(
-    //         opos_token.to_account_info(),
-    //         genesis_profile_holder_opos_ata.to_account_info(),
-    //         current_genesis_profile_holder.to_account_info(),
-    //         user.to_account_info(),
-    //         token_program.to_account_info(),
-    //         system_program.to_account_info(),
-    //         associated_token_program.to_account_info(),
-    //     ) == Ok(())
-    //     // token::mint = opos_token,
-    //     // token::authority = current_genesis_profile_holder,
-    // )]
-    // pub genesis_profile_holder_opos_ata: AccountInfo<'info>,
 }
 
 impl<'info> AMintProfileByAt<'info> {
@@ -368,15 +261,15 @@ impl<'info> AMintProfileByAt<'info> {
         let main_state = &mut self.main_state;
 
         //mint a token
-        let cpi_acounts = MintTo {
-            mint: mint.to_account_info(),
-            to: user_profile_ata,
-            authority: user.to_account_info(),
-        };
-        token::mint_to(
-            CpiContext::new(token_program.to_account_info(), cpi_acounts),
-            1,
-        )?;
+        // let cpi_acounts = MintTo {
+        //     mint: mint.to_account_info(),
+        //     to: user_profile_ata,
+        //     authority: user.to_account_info(),
+        // };
+        // token::mint_to(
+        //     CpiContext::new(token_program.to_account_info(), cpi_acounts),
+        //     1,
+        // )?;
 
         // Creators Setup for royalty
         let trading_price_distribution = main_state.minting_cost_distribution;
@@ -386,31 +279,27 @@ impl<'info> AMintProfileByAt<'info> {
             Creator {
                 address: user.key(),
                 verified: false,
-                share: 0,
+                share: 100,
             },
             Creator {
                 address: get_vault_pda(&self.profile_state.lineage.parent).0,
                 verified: false,
-                share: (trading_price_distribution.parent as u64 * 100u64
-                    / seller_fee_basis_points as u64) as u8,
+                share: 0,
             },
             Creator {
                 address: get_vault_pda(&self.profile_state.lineage.grand_parent).0,
                 verified: false,
-                share: (trading_price_distribution.grand_parent as u64 * 100u64
-                    / seller_fee_basis_points as u64) as u8,
+                share: 0,
             },
             Creator {
                 address: get_vault_pda(&self.profile_state.lineage.great_grand_parent).0,
                 verified: false,
-                share: (trading_price_distribution.great_grand_parent as u64 * 100u64
-                    / seller_fee_basis_points as u64) as u8,
+                share: 0,
             },
             Creator {
                 address: get_vault_pda(&main_state.genesis_profile).0,
                 verified: false,
-                share: (trading_price_distribution.genesis as u64 * 100u64
-                    / seller_fee_basis_points as u64) as u8,
+                share: 0,
             },
         ];
 
@@ -431,13 +320,10 @@ impl<'info> AMintProfileByAt<'info> {
                 .collect::<Vec<_>>(),
         );
 
-        let entry_point = "https://shdw-drive.genesysgo.net/FuBjTTmQuqM7pGR2gFsaiBxDmdj8ExP5fzNwnZyE2PgC/".to_string();
-        let uri = format!("{}{}", entry_point, uri_hash);
-
         let asset_data = CreateArgs::V1 {
             name,
             symbol,
-            uri,
+            uri: uri_hash,
             collection: Some(mpl_token_metadata::types::Collection {
                 verified: false,
                 key: self.collection.key(),
@@ -458,7 +344,7 @@ impl<'info> AMintProfileByAt<'info> {
         let ix = CreateBuilder::new()
         .metadata(metadata.key())
         .master_edition(Some(edition.key()))
-        .mint( mint.key(), false)
+        .mint( mint.key(), true)
         .authority(user.key())
         .payer(user.key())
         .update_authority(main_state.key(),true)
