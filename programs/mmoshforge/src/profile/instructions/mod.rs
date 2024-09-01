@@ -10,3 +10,6 @@ pub use mint_genesis_pass::*;
 
 pub mod mint_pass_by_at;
 pub use mint_pass_by_at::*;
+
+pub mod mint_guest_pass;
+pub use mint_guest_pass::*;
