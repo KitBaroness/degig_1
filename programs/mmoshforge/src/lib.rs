@@ -93,6 +93,19 @@ pub mod mmoshforge {
         Ok(())
     }
 
+    //User calls
+    pub fn update_profile(
+        ctx: Context<AUpdateMint>,
+        name: Box<String>,
+        symbol: Box<String>,
+        // uri: Box<String>,
+        uri_hash: Box<String>,
+    ) -> Result<()> {
+        profile::update_profile(ctx, name, symbol, uri_hash)?;
+        Ok(())
+    }
+  
+  
 
     pub fn mint_genesis_pass(
       ctx: Context<AMintPassByAdmin>,
