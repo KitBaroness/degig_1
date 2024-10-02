@@ -7,7 +7,7 @@ use anchor_spl::{
 };
 use mpl_token_metadata::{
     instructions::{
-        ApproveCollectionAuthority, Create, CreateBuilder, Verify
+        ApproveCollectionAuthority, Create, CreateBuilder, Verify, VerifyInstructionArgs
     },
     types::{CreateArgs, Creator},
     ID as MPL_ID,
@@ -34,17 +34,10 @@ use crate::{
     },
 };
 
-#[derive(AnchorSerialize, AnchorDeserialize, Default, Clone)]
-pub struct MintProfileByAtInput {
-    pub name: String,
-    pub symbol: String,
-    // pub uri: String,
-    pub uri_hash: String,
-}
 
 ///MINT FakeID by activation_token
-pub fn mint_profile_by_at(
-    ctx: Context<AMintProfileByAt>,
+pub fn mint_guest_pass(
+    ctx: Context<AMintGuestPass>,
     name: Box<String>,
     symbol: Box<String>,
     uri_hash: Box<String>,
@@ -57,10 +50,12 @@ pub fn mint_profile_by_at(
         let main_state = &mut ctx.accounts.main_state;
         let profile_state = &mut ctx.accounts.profile_state;
         let parent_profile_state = &mut ctx.accounts.parent_profile_state;
-        // let parent_profile_metadata = ctx.accounts.parent_profile_metadata.to_account_info();
         let token_program = ctx.accounts.token_program.to_account_info();
 
-
+        if main_state.invitation_minting_cost > 0 {
+            return Err(error!(MyError::NOTEligibleForGuestPass));
+        }
+        
         //state changes
         profile_state.mint = ctx.accounts.profile.key();
         profile_state.lineage.creator = ctx.accounts.user.key();
@@ -79,22 +74,15 @@ pub fn mint_profile_by_at(
         //NOTE: created mint collection verifiaction
         ctx.accounts.verify_collection_item(ctx.program_id)?;
     }
-
-    {
-        ctx.accounts.burn_activation_token(ctx.program_id)?;
-    }
     Ok(())
 }
-
-
 
 #[derive(Accounts)]
 #[instruction(
     name: Box<String>,
     symbol: Box<String>,
     uri: Box<String>,
-)]
-pub struct AMintProfileByAt<'info> {
+)]pub struct AMintGuestPass<'info> {
     #[account(mut)]
     pub user: Signer<'info>,
 
@@ -106,27 +94,21 @@ pub struct AMintProfileByAt<'info> {
     pub system_program: Program<'info, System>,
 
     ///CHECK:
-    #[account(address = main_state.opos_token)]
-    pub opos_token: AccountInfo<'info>,
-
-    ///CHECK:
+    pub project: AccountInfo<'info>,
+    
     #[account(
         mut,
-        token::mint = activation_token,
-        token::authority = user,
-        constraint = user_activation_token_ata.amount >= 1 @ MyError::ActivationTokenNotFound,
+        seeds = [SEED_MAIN_STATE, project.key().as_ref()],
+        bump,
     )]
-    pub user_activation_token_ata: Box<Account<'info, TokenAccount>>,
+    pub main_state: Box<Account<'info, MainState>>,
 
     #[account(
         mut,
         seeds = [SEED_MAIN_STATE],
         bump,
     )]
-    pub main_state: Box<Account<'info, MainState>>,
-
-    #[account(mut)]
-    pub activation_token: Box<Account<'info, Mint>>,
+    pub parent_main_state: Box<Account<'info, MainState>>,
 
     ///CHECK:
     #[account(
@@ -180,18 +162,6 @@ pub struct AMintProfileByAt<'info> {
     )]
     pub profile_edition: AccountInfo<'info>,
 
-    // ///CHECK:
-    // #[account(
-    //     mut,
-    //     seeds=[
-    //         METADATA.as_ref(),
-    //         MPL_ID.as_ref(),
-    //         activation_token_state.parent_profile.as_ref(),
-    //     ],
-    //     bump,
-    //     seeds::program = MPL_ID
-    // )]
-    // pub parent_profile_metadata: AccountInfo<'info>,
     #[account(
         mut,
         seeds = [SEED_PROFILE_STATE, parent_profile.key().as_ref()],
@@ -244,7 +214,7 @@ pub struct AMintProfileByAt<'info> {
 
 }
 
-impl<'info> AMintProfileByAt<'info> {
+impl<'info> AMintGuestPass<'info> {
     pub fn mint(&mut self, name: String, symbol: String, uri_hash: String) -> Result<()> {
         let mint = self.profile.to_account_info();
         let user = self.user.to_account_info();
@@ -260,7 +230,7 @@ impl<'info> AMintProfileByAt<'info> {
         let sysvar_instructions = self.sysvar_instructions.to_account_info();
         let main_state = &mut self.main_state;
 
-        //mint a token
+        // //mint a token
         // let cpi_acounts = MintTo {
         //     mint: mint.to_account_info(),
         //     to: user_profile_ata,
@@ -272,7 +242,6 @@ impl<'info> AMintProfileByAt<'info> {
         // )?;
 
         // Creators Setup for royalty
-        let trading_price_distribution = main_state.minting_cost_distribution;
         let seller_fee_basis_points = TOTAL_SELLER_BASIS_POINTS;
         let creators = vec![
             //NOTE: currently not royalty info for creator
@@ -280,27 +249,7 @@ impl<'info> AMintProfileByAt<'info> {
                 address: user.key(),
                 verified: false,
                 share: 100,
-            },
-            Creator {
-                address: get_vault_pda(&self.profile_state.lineage.parent).0,
-                verified: false,
-                share: 0,
-            },
-            Creator {
-                address: get_vault_pda(&self.profile_state.lineage.grand_parent).0,
-                verified: false,
-                share: 0,
-            },
-            Creator {
-                address: get_vault_pda(&self.profile_state.lineage.great_grand_parent).0,
-                verified: false,
-                share: 0,
-            },
-            Creator {
-                address: get_vault_pda(&main_state.genesis_profile).0,
-                verified: false,
-                share: 0,
-            },
+            }
         ];
 
         let mut unique_creators = HashMap::<Pubkey, Creator>::new();
@@ -353,6 +302,7 @@ impl<'info> AMintProfileByAt<'info> {
         .system_program(system_program.key())
         .create_args(asset_data)
         .instruction();
+    
 
 
         invoke_signed(
@@ -369,7 +319,7 @@ impl<'info> AMintProfileByAt<'info> {
                 sysvar_instructions,
             ],
             &[
-                &[SEED_MAIN_STATE, &[self.main_state._bump]],
+                &[SEED_MAIN_STATE, self.project.key().as_ref(), &[self.main_state._bump]],
             ],
         )?;
 
@@ -381,42 +331,42 @@ impl<'info> AMintProfileByAt<'info> {
         let token_program = self.token_program.to_account_info();
         let mpl_program = self.mpl_program.to_account_info();
         let metadata = self.profile_metadata.to_account_info();
-        let main_state = &mut self.main_state;
+        let main_state = &mut self.parent_main_state;
         let collection = self.collection.to_account_info();
         let collection_metadata = self.collection_metadata.to_account_info();
         let collection_edition = self.collection_edition.to_account_info();
         // let collection_authority_record = self.collection_authority_record.to_account_info();
         let sysvar_instructions = self.sysvar_instructions.to_account_info();
 
-        verify_collection_item_by_main(
-            metadata,
-            collection,
-            collection_metadata,
-            collection_edition,
-            main_state,
-            mpl_program,
-            system_program,
-            sysvar_instructions,
+        let ix = Verify {
+            collection_metadata: Some(collection_metadata.key()),
+            metadata: metadata.key(),
+            authority: main_state.key(),
+            collection_mint: Some(collection.key()),
+            collection_master_edition: Some(collection_edition.key()),
+            system_program: system_program.key(),
+            sysvar_instructions: sysvar_instructions.key(),
+            // delegate_record: Some(collection_authority_record.key()),
+            delegate_record: None,
+        }
+        .instruction(VerifyInstructionArgs {verification_args:mpl_token_metadata::types::VerificationArgs::CollectionV1});
+    
+    
+        invoke_signed(
+            &ix,
+            &[
+                metadata,
+                main_state.to_account_info(),
+                collection,
+                collection_metadata,
+                collection_edition,
+                mpl_program,
+                system_program,
+                // collection_authority_record,
+                sysvar_instructions,
+            ],
+            &[&[SEED_MAIN_STATE, &[main_state._bump]]],
         )?;
-        Ok(())
-    }
-
-    pub fn burn_activation_token(&mut self, program_id: &Pubkey) -> Result<()> {
-        let mint = self.activation_token.to_account_info();
-        let user = self.user.to_account_info();
-        let user_activation_token_ata = self.user_activation_token_ata.to_account_info();
-        let system_program = self.system_program.to_account_info();
-        let token_program = self.token_program.to_account_info();
-        let mpl_program = self.mpl_program.to_account_info();
-        let sysvar_instructions = self.sysvar_instructions.to_account_info();
-
-        let cpi_accounts = Burn {
-            mint,
-            from: user_activation_token_ata,
-            authority: user,
-        };
-
-        token::burn(CpiContext::new(token_program, cpi_accounts), 1)?;
         Ok(())
     }
 

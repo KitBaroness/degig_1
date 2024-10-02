@@ -1,6 +1,6 @@
 #![allow(unused)]
 use anchor_lang::prelude::*;
-declare_id!("GQJBSNqckwApKwrjHMgvhhFtwZFxb3YCoDFFcLmYCnEA");
+declare_id!("EY88TjZfEHkJBq4DoYqZPLEvBTT1YEPAKXWXD531dHmN");
 
 pub mod _main;
 pub mod activation_token;
@@ -93,6 +93,19 @@ pub mod mmoshforge {
         Ok(())
     }
 
+    //User calls
+    pub fn update_profile(
+        ctx: Context<AUpdateMint>,
+        name: Box<String>,
+        symbol: Box<String>,
+        // uri: Box<String>,
+        uri_hash: Box<String>,
+    ) -> Result<()> {
+        profile::update_profile(ctx, name, symbol, uri_hash)?;
+        Ok(())
+    }
+  
+  
 
     pub fn mint_genesis_pass(
       ctx: Context<AMintPassByAdmin>,
@@ -118,6 +131,18 @@ pub mod mmoshforge {
         Ok(())
     }
     
+        //User calls
+    pub fn mint_guest_pass(
+        ctx: Context<AMintGuestPass>,
+        name: Box<String>,
+        symbol: Box<String>,
+        // uri: Box<String>,
+        uri_hash: Box<String>,
+    ) -> Result<()> {
+        profile::mint_guest_pass(ctx, name, symbol, uri_hash)?;
+        Ok(())
+    }
+      
 
     pub fn init_activation_token(
         ctx: Context<AInitActivationToken>,

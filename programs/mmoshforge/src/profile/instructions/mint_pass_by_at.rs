@@ -141,9 +141,7 @@ pub struct AMintPassByAt<'info> {
 
     ///CHECK:
     #[account(
-        init,
-        signer,
-        payer = user,
+        mut,
         mint::decimals = 0,
         mint::authority = user,
         mint::freeze_authority = user,
@@ -151,8 +149,7 @@ pub struct AMintPassByAt<'info> {
     pub profile: Box<Account<'info, Mint>>,
 
     #[account(
-        init,
-        payer = user,
+        mut,
         associated_token::mint = profile,
         associated_token::authority = user,
     )]
@@ -366,16 +363,16 @@ impl<'info> AMintPassByAt<'info> {
         let sysvar_instructions = self.sysvar_instructions.to_account_info();
         let main_state = &mut self.main_state;
 
-        //mint a token
-        let cpi_acounts = MintTo {
-            mint: mint.to_account_info(),
-            to: user_profile_ata,
-            authority: user.to_account_info(),
-        };
-        token::mint_to(
-            CpiContext::new(token_program.to_account_info(), cpi_acounts),
-            1,
-        )?;
+        // //mint a token
+        // let cpi_acounts = MintTo {
+        //     mint: mint.to_account_info(),
+        //     to: user_profile_ata,
+        //     authority: user.to_account_info(),
+        // };
+        // token::mint_to(
+        //     CpiContext::new(token_program.to_account_info(), cpi_acounts),
+        //     1,
+        // )?;
 
         // Creators Setup for royalty
         let seller_fee_basis_points = TOTAL_SELLER_BASIS_POINTS;
@@ -429,7 +426,7 @@ impl<'info> AMintPassByAt<'info> {
         let ix = CreateBuilder::new()
         .metadata(metadata.key())
         .master_edition(Some(edition.key()))
-        .mint( mint.key(), false)
+        .mint( mint.key(), true)
         .authority(user.key())
         .payer(user.key())
         .update_authority(main_state.key(),true)

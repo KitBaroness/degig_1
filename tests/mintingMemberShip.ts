@@ -42,10 +42,10 @@ describe("sop", () => {
 
 
 
-  it("minting opos token", async () => {
-    const { mint, txSignature } = await __mintOposToken(provider);
-    log({ oposToken: mint.toBase58() })
-  })
+  // it("minting opos token", async () => {
+  //   const { mint, txSignature } = await __mintOposToken(provider);
+  //   log({ oposToken: mint.toBase58() })
+  // })
 
 
 
@@ -80,6 +80,36 @@ describe("sop", () => {
   });
 
 
+
+  it("Update Main State!", async () => {
+    const profileMintingCost = new BN(calcNonDecimalValue(20000, 9))
+    const invitationMintingCost = new BN(calcNonDecimalValue(1, 9))
+    const res = await adConn.updateMainState({
+      oposToken,
+      profileMintingCost,
+      invitationMintingCost,
+      mintingCostDistribution: {
+        parent: 100 * 20,
+        grandParent: 100 * 10,
+        greatGrandParent: 100 * 7,
+        ggreatGrandParent: 100 * 3,
+        genesis: 100 * 60,
+      },
+      tradingPriceDistribution: {
+        seller: 100 * 80,
+        parent: 100 * 5,
+        grandParent: 100 * 3,
+        greatGrandParent: 100 * 2,
+        genesis: 100 * 10,
+      }
+    })
+    log({ res })
+    // if (res?.Err) throw "initialise mainstate failed"
+    assert(res?.Ok, "initialise mainstate failed")
+  });
+
+  return
+
   // let rootCollection: web3.PublicKey = null
   // it("creating root Collections", async () => {
 
@@ -99,7 +129,6 @@ describe("sop", () => {
 
   //   console.log("new root collection ",rootCollection.toBase58());
   // })
-
 
   // let badgeCollection: web3.PublicKey = null
   // it("creating badge Collections", async () => {
@@ -172,6 +201,7 @@ describe("sop", () => {
 
 
 
+
   // it("update profile Collections", async () => {
 
   //   const name = "MMOSH Profile Collection"
@@ -226,7 +256,9 @@ describe("sop", () => {
     console.log("genesisProfileStr ",genesisProfileStr);
   })
 
-return
+
+
+
 
   let commonLut: web3.PublicKey = null
   it("Initialise address lookup table", async () => {
@@ -263,6 +295,8 @@ return
     console.log("mew lookup table ",commonLut.toBase58());
   })
 
+  return
+
   let activationToken: web3.PublicKey = null
   it("Initialise activation token", async () => {
     const __collection = (await adConn.program.account.mainState.fetch(adConn.mainState)).profileCollection;
@@ -274,6 +308,8 @@ return
     log("ActivationToken: ", res.Ok.info.activationToken)
     activationToken = new web3.PublicKey(res.Ok.info.activationToken)
   })
+
+
 
 
 

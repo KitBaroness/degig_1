@@ -37,4 +37,7 @@ pub enum MyError {
 
     #[msg("Token locked time not expired")]
     TimeLockNotExpired,
+
+    #[msg("Not Eligble to create guest pass")]
+    NOTEligibleForGuestPass,
 }
