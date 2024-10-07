@@ -6,7 +6,7 @@ seeds = false
 skip-lint = false
 
 [programs.devnet]
-mmoshforge = "GQJBSNqckwApKwrjHMgvhhFtwZFxb3YCoDFFcLmYCnEA"
+mmoshforge = "EY88TjZfEHkJBq4DoYqZPLEvBTT1YEPAKXWXD531dHmN"
 
 [registry]
 url = "https://api.apr.dev"
