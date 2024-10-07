@@ -57,10 +57,6 @@ pub mod mmoshforge {
         Ok(())
     }
 
-    pub fn reset_main(ctx: Context<AResetMain>) -> Result<()> {
-        Ok(())
-    }
-
     pub fn create_collection(
         ctx: Context<ACreateCollection>,
         name: String,

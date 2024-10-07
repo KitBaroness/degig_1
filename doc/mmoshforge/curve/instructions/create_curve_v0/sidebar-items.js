@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["curve_is_valid","handler","primitive_curve_is_valid"],"struct":["CreateCurveV0Args","InitializeCurveV0","InitializeCurveV0Bumps"]};

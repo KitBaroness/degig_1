@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"mod":["buy_launch_pass","init_launch_pass","redeem_launch_pass"]};

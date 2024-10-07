@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["mint_activation_token"],"struct":["AMintActivationToken","AMintActivationTokenBumps"]};

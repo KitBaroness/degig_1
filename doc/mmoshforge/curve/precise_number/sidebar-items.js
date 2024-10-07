@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["HALF","L1","L2","L3","L4","L5","L6","L7","LN2HI","LN2HI_SCALE","LN2LO","LN2LO_SCALE","ONE","SQRT2OVERTWO"],"fn":["half","l1","l2","l3","l4","l5","l6","l7","ln2hi","ln2hi_scale","ln2lo","ln2lo_scale","one","sqrt2overtwo","two","zero"],"static":["ONE_PREC","TWO_PREC","ZERO_PREC"],"struct":["PreciseNumber"],"type":["InnerUint"]};

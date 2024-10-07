@@ -16,6 +16,7 @@ use crate::{
     utils::{_verify_collection,init_ata_if_needed, transfer_tokens},
 };
 
+/// This is the function which used to create instruction for minting badge token
 pub fn create_pass_token(ctx: Context<ACreatePassToken>, amount: u64) -> Result<()> {
     let minter = ctx.accounts.minter.to_account_info();
     let mint = ctx.accounts.activation_token.to_account_info();
@@ -44,12 +45,14 @@ pub fn create_pass_token(ctx: Context<ACreatePassToken>, amount: u64) -> Result<
 
 #[derive(Accounts)]
 pub struct ACreatePassToken<'info> {
+    /// minter publickey and mandatory signer while pushing the instruction to solana
     #[account(
         mut,
         address = activation_token_state.creator
     )]
     pub minter: Signer<'info>,
 
+    /// load associated token account for minter
     #[account(
         mut,
         token::mint = profile,
@@ -58,6 +61,7 @@ pub struct ACreatePassToken<'info> {
     )]
     pub minter_profile_ata: Box<Account<'info, TokenAccount>>,
 
+    /// activation token associated token account for receiver
     ///CHECK:
     #[account(
         mut,
@@ -65,9 +69,11 @@ pub struct ACreatePassToken<'info> {
     )]
     pub receiver_ata: Box<Account<'info, TokenAccount>>,
 
+    /// project public key
     ///CHECK:
     pub project: AccountInfo<'info>,
 
+    /// load project mainstate account public key
     #[account(
         mut,
         seeds = [SEED_MAIN_STATE, project.key().as_ref()],
@@ -75,12 +81,14 @@ pub struct ACreatePassToken<'info> {
     )]
     pub main_state: Box<Account<'info, MainState>>,
 
+    /// activation token public key
     #[account(
         mut,
         address = profile_state.activation_token.unwrap() @ MyError::ActivationTokenNotFound
     )]
     pub activation_token: Box<Account<'info, Mint>>,
 
+    /// load activiation state account public key 
     #[account(
         mut,
         seeds = [SEED_ACTIVATION_TOKEN_STATE,activation_token.key().as_ref()],
@@ -88,16 +96,21 @@ pub struct ACreatePassToken<'info> {
     )]
     pub activation_token_state: Box<Account<'info, ActivationTokenState>>,
 
+    /// profile nft public key
     #[account()]
     pub profile: Box<Account<'info, Mint>>,
 
+    /// load profile state account public key 
     #[account(
         mut,
         seeds = [SEED_PROFILE_STATE,profile.key().as_ref()],
         bump,
     )]
     pub profile_state: Box<Account<'info, ProfileState>>,
+    /// metaplex token program public key
     pub token_program: Program<'info, Token>,
+    /// metaplex associated token program public key
     pub associated_token_program: Program<'info, AssociatedToken>,
+    /// system program public key
     pub system_program: Program<'info, System>,
 }

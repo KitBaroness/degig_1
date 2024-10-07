@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["init_main_state"],"struct":["AInitMainState","AInitMainStateBumps"]};

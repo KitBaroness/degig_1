@@ -1,6 +1,7 @@
 use crate::other_states::LineageInfo;
 use anchor_lang::prelude::*;
 
+/// Struct used to store activation token state in PDA
 #[account]
 pub struct ActivationTokenState {
     // lineage: LineageInfo,

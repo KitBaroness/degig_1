@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["mint_genesis_pass"],"struct":["AMintPassByAdmin","AMintPassByAdminBumps"]};

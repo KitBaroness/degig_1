@@ -60,6 +60,7 @@
 | `22` | `stake_vault` | `stake value into vault account` | 
 | `23` | `unstake_vault` | `unstake value from vault account` | 
 
+
 ## LICENSE
 Copyright 2024 mmosh.app
 

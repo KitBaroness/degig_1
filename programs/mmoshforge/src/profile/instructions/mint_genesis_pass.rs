@@ -33,7 +33,7 @@ use crate::{
     }, CollectionState, MainStateInput,
 };
 
-///MINT FakeID by activation_token
+/// This is the function which used to create instruction for mint gensis pass nft
 pub fn mint_genesis_pass(
     ctx: Context<AMintPassByAdmin>,
     name: Box<String>,
@@ -89,6 +89,7 @@ pub fn mint_genesis_pass(
 
 
 
+/// Struct used to create context while preparing instruction for create new gensis pass nft
 #[derive(Accounts)]
 #[instruction(
     name: Box<String>,
@@ -96,16 +97,22 @@ pub fn mint_genesis_pass(
     uri: Box<String>,
 )]
 pub struct AMintPassByAdmin<'info> {
+    /// owner publickey and mandatory signer while pushing the instruction to solana
     #[account(mut)]
     pub user: Signer<'info>,
 
+    /// mpl program public key
     ///CHECK:
     #[account(address = MPL_ID)]
     pub mpl_program: AccountInfo<'info>,
+    /// token program public key
     pub token_program: Program<'info, Token>,
+    /// associated token program public key
     pub associated_token_program: Program<'info, AssociatedToken>,
+    /// sytem program public key
     pub system_program: Program<'info, System>,
 
+    /// project public key
     ///CHECK:
     #[account(
         mut,
@@ -115,7 +122,7 @@ pub struct AMintPassByAdmin<'info> {
     )]
     pub profile: Box<Account<'info, Mint>>,
 
-
+    /// load project mainstate account with seed for update purpose
     #[account(
         init,
         payer = user,
@@ -125,6 +132,7 @@ pub struct AMintPassByAdmin<'info> {
     )]
     pub main_state: Box<Account<'info, MainState>>,
 
+    /// load mainstate account with seed for update purpose
     #[account(
         mut,
         seeds = [SEED_MAIN_STATE],
@@ -132,6 +140,7 @@ pub struct AMintPassByAdmin<'info> {
     )]
     pub parent_main_state: Box<Account<'info, MainState>>,
 
+    /// signer token assoicated account public key
     #[account(
         mut,
         associated_token::mint = profile,
@@ -139,6 +148,7 @@ pub struct AMintPassByAdmin<'info> {
     )]
     pub user_profile_ata: Box<Account<'info, TokenAccount>>,
 
+    /// load profile state account public key 
     #[account(
         init,
         payer =  user,
@@ -148,6 +158,7 @@ pub struct AMintPassByAdmin<'info> {
     )]
     pub profile_state: Box<Account<'info, ProfileState>>,
 
+    /// load profile metadata account public key 
     ///CHECK:
     #[account(
         mut,
@@ -161,6 +172,7 @@ pub struct AMintPassByAdmin<'info> {
     )]
     pub profile_metadata: AccountInfo<'info>,
 
+    /// load profile edition account public key 
     ///CHECK:
     #[account(
         mut,
@@ -175,10 +187,12 @@ pub struct AMintPassByAdmin<'info> {
     )]
     pub profile_edition: AccountInfo<'info>,
 
+    /// collection public key
     ///CHECK: //PERF:
     #[account(mut)]
     pub collection: AccountInfo<'info>,
 
+    /// collection state account from publickey 
     #[account(
         mut,
         seeds = [SEED_COLLECTION_STATE, collection.key().as_ref()],
@@ -186,6 +200,7 @@ pub struct AMintPassByAdmin<'info> {
     )]
     pub collection_state: Account<'info, CollectionState>,
 
+    /// collection metdata account public key 
     ///CHECK:
     #[account(
         mut,
@@ -199,6 +214,7 @@ pub struct AMintPassByAdmin<'info> {
     )]
     pub collection_metadata: AccountInfo<'info>,
 
+    /// collection edition account public key 
     ///CHECK:
     #[account(
         mut,
@@ -214,6 +230,7 @@ pub struct AMintPassByAdmin<'info> {
     )]
     pub collection_edition: AccountInfo<'info>,
 
+    /// system var instruction public key
     ///CHECK:
     #[account()]
     pub sysvar_instructions: AccountInfo<'info>

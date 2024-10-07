@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"mod":["init_vault","stake_vault","unstake_vault"]};

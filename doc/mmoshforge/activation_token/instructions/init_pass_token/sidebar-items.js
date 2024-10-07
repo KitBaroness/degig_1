@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["init_pass_token"],"struct":["AInitPassToken","AInitPassTokenBumps"]};

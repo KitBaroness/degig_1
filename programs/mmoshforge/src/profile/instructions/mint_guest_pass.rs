@@ -35,7 +35,7 @@ use crate::{
 };
 
 
-///MINT FakeID by activation_token
+/// This is the function which used to create instruction for mint guest pass nft
 pub fn mint_guest_pass(
     ctx: Context<AMintGuestPass>,
     name: Box<String>,
@@ -77,25 +77,33 @@ pub fn mint_guest_pass(
     Ok(())
 }
 
+/// Struct used to create context while preparing instruction for create new guest pass nft
 #[derive(Accounts)]
 #[instruction(
     name: Box<String>,
     symbol: Box<String>,
     uri: Box<String>,
 )]pub struct AMintGuestPass<'info> {
+    /// owner publickey and mandatory signer while pushing the instruction to solana
     #[account(mut)]
     pub user: Signer<'info>,
 
+    /// mpl program public key
     ///CHECK:
     #[account(address = MPL_ID)]
     pub mpl_program: AccountInfo<'info>,
+    /// token program public key
     pub token_program: Program<'info, Token>,
+    /// associated token program public key
     pub associated_token_program: Program<'info, AssociatedToken>,
+    /// sytem program public key
     pub system_program: Program<'info, System>,
 
+    /// project public key
     ///CHECK:
     pub project: AccountInfo<'info>,
     
+    /// load project mainstate account with seed for update purpose
     #[account(
         mut,
         seeds = [SEED_MAIN_STATE, project.key().as_ref()],
@@ -103,6 +111,7 @@ pub fn mint_guest_pass(
     )]
     pub main_state: Box<Account<'info, MainState>>,
 
+    /// load mainstate account with seed for update purpose
     #[account(
         mut,
         seeds = [SEED_MAIN_STATE],
@@ -110,6 +119,7 @@ pub fn mint_guest_pass(
     )]
     pub parent_main_state: Box<Account<'info, MainState>>,
 
+    /// profile public key
     ///CHECK:
     #[account(
         mut,
@@ -119,6 +129,7 @@ pub fn mint_guest_pass(
     )]
     pub profile: Box<Account<'info, Mint>>,
 
+    /// signer token assoicated account public key
     #[account(
         mut,
         associated_token::mint = profile,
@@ -126,6 +137,7 @@ pub fn mint_guest_pass(
     )]
     pub user_profile_ata: Box<Account<'info, TokenAccount>>,
 
+    /// load profile state account public key 
     #[account(
         init,
         payer =  user,
@@ -135,6 +147,7 @@ pub fn mint_guest_pass(
     )]
     pub profile_state: Box<Account<'info, ProfileState>>,
 
+    /// load profile metadata account public key 
     ///CHECK:
     #[account(
         mut,
@@ -148,6 +161,7 @@ pub fn mint_guest_pass(
     )]
     pub profile_metadata: AccountInfo<'info>,
 
+    /// load profile edition account public key 
     ///CHECK:
     #[account(
         mut,
@@ -162,6 +176,7 @@ pub fn mint_guest_pass(
     )]
     pub profile_edition: AccountInfo<'info>,
 
+    /// load parent profile state public key
     #[account(
         mut,
         seeds = [SEED_PROFILE_STATE, parent_profile.key().as_ref()],
@@ -169,10 +184,12 @@ pub fn mint_guest_pass(
     )]
     pub parent_profile_state: Box<Account<'info, ProfileState>>,
 
+    /// collection public key
     ///CHECK: //PERF:
     #[account(mut)]
     pub collection: AccountInfo<'info>,
 
+    /// collection metadata publickey to make nft as verified nft
     ///CHECK:
     #[account(
         mut,
@@ -186,6 +203,7 @@ pub fn mint_guest_pass(
     )]
     pub collection_metadata: AccountInfo<'info>,
 
+    /// collection edition account public key 
     ///CHECK:
     #[account(
         mut,
@@ -204,10 +222,12 @@ pub fn mint_guest_pass(
     // #[account(address = ADDRESS_LOOKUP_TABLE_PROGRAM)]
     // pub address_lookup_table_program: AccountInfo<'info>,
 
+    /// system var instruction public key
     ///CHECK:
     #[account()]
     pub sysvar_instructions: AccountInfo<'info>,
 
+    /// parent profile nft public key
     //NOTE: profile minting cost distribution account
     // #[account(address = activation_token_state.parent_profile @ MyError::ProfileIdMissMatch)]
     pub parent_profile: Box<Account<'info, Mint>>,

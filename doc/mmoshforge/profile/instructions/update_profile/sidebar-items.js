@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["update_profile"],"struct":["AUpdateMint","AUpdateMintBumps"]};

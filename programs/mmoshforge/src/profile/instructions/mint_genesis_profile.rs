@@ -33,6 +33,7 @@ pub struct MintProfileByAdminInput {
     parent_mint: Pubkey,
 }
 
+/// This is the function which used to create instruction for mint gensis profile nft
 pub fn mint_genesis_profile(
     ctx: Context<AMintProfileByAdmin>,
     input: MintProfileByAdminInput,
@@ -84,9 +85,11 @@ pub fn mint_genesis_profile(
 
 #[derive(Accounts)]
 pub struct AMintProfileByAdmin<'info> {
+    /// owner publickey and mandatory signer while pushing the instruction to solana
     #[account(mut, address = main_state.owner @ MyError::OnlyOwnerCanCall)]
     pub admin: Signer<'info>,
 
+    /// load mainstate account with seed for update purpose
     #[account(
         mut,
         seeds = [SEED_MAIN_STATE],
@@ -94,6 +97,7 @@ pub struct AMintProfileByAdmin<'info> {
     )]
     pub main_state: Box<Account<'info, MainState>>,
 
+    /// project public key
     #[account(
         mut,
         mint::decimals = 0,
@@ -102,6 +106,7 @@ pub struct AMintProfileByAdmin<'info> {
     )]
     pub profile: Box<Account<'info, Mint>>,
 
+    /// profile associated token account public key
     #[account(
         mut,
         token::mint = profile,
@@ -110,6 +115,7 @@ pub struct AMintProfileByAdmin<'info> {
     )]
     pub admin_ata: Box<Account<'info, TokenAccount>>,
 
+     /// load profile state account public key 
     #[account(
         init,
         payer =  admin,
@@ -119,6 +125,7 @@ pub struct AMintProfileByAdmin<'info> {
     )]
     pub profile_state: Box<Account<'info, ProfileState>>,
 
+    /// load profile metadata account public key 
     ///CHECK:
     #[account(
         mut,
@@ -146,10 +153,12 @@ pub struct AMintProfileByAdmin<'info> {
     )]
     pub profile_edition: AccountInfo<'info>,
 
+    /// collection public key
     ///CHECK:
     #[account(mut)]
     pub collection: AccountInfo<'info>,
 
+    /// collection state account from publickey 
     #[account(
         mut,
         seeds = [SEED_COLLECTION_STATE, collection.key().as_ref()],
@@ -157,6 +166,7 @@ pub struct AMintProfileByAdmin<'info> {
     )]
     pub collection_state: Account<'info, CollectionState>,
 
+    /// collection metdata account public key 
     ///CHECK:
     #[account(
         mut,
@@ -170,6 +180,7 @@ pub struct AMintProfileByAdmin<'info> {
     )]
     pub collection_metadata: AccountInfo<'info>,
 
+    /// collection edition account public key 
     ///CHECK:
     #[account(
         mut,
@@ -184,6 +195,7 @@ pub struct AMintProfileByAdmin<'info> {
     )]
     pub collection_edition: AccountInfo<'info>,
 
+    /// collection authority account public key 
     ///CHECK:
     #[account(
         mut,
@@ -199,6 +211,7 @@ pub struct AMintProfileByAdmin<'info> {
     )]
     pub collection_authority_record: AccountInfo<'info>,
 
+    /// sub collection authority account public key 
     ///CHECK:
     #[account(
         mut,
@@ -214,17 +227,22 @@ pub struct AMintProfileByAdmin<'info> {
     )]
     pub sub_collection_authority_record: AccountInfo<'info>,
 
+    /// system var instruction public key
     //PERF: not sure parent profile nft collection verification are require or not (think it
     //already secure)
     ///CHECK:
     #[account()]
     pub sysvar_instructions: AccountInfo<'info>,
 
+    /// mpl program public key
     ///CHECK:
     #[account(address = MPL_ID)]
     pub mpl_program: AccountInfo<'info>,
+    /// token program public key
     pub token_program: Program<'info, Token>,
+    /// associated token program public key
     pub associated_token_program: Program<'info, AssociatedToken>,
+    /// sytem program public key
     pub system_program: Program<'info, System>,
 }
 

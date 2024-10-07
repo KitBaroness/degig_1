@@ -34,15 +34,8 @@ use crate::{
     },
 };
 
-#[derive(AnchorSerialize, AnchorDeserialize, Default, Clone)]
-pub struct MintProfileByAtInput {
-    pub name: String,
-    pub symbol: String,
-    // pub uri: String,
-    pub uri_hash: String,
-}
 
-///MINT FakeID by activation_token
+/// This is the function which used to create instruction for mint new profile nft
 pub fn mint_profile_by_at(
     ctx: Context<AMintProfileByAt>,
     name: Box<String>,
@@ -88,6 +81,7 @@ pub fn mint_profile_by_at(
 
 
 
+/// Struct used to create context while preparing instruction for create new profile nft
 #[derive(Accounts)]
 #[instruction(
     name: Box<String>,
@@ -95,20 +89,27 @@ pub fn mint_profile_by_at(
     uri: Box<String>,
 )]
 pub struct AMintProfileByAt<'info> {
+    /// owner publickey and mandatory signer while pushing the instruction to solana
     #[account(mut)]
     pub user: Signer<'info>,
 
+    /// mpl program public key
     ///CHECK:
     #[account(address = MPL_ID)]
     pub mpl_program: AccountInfo<'info>,
+    /// token program public key
     pub token_program: Program<'info, Token>,
+    /// associated token program public key
     pub associated_token_program: Program<'info, AssociatedToken>,
+    /// sytem program public key
     pub system_program: Program<'info, System>,
 
+    /// token public key which used to pay for profile token mint
     ///CHECK:
     #[account(address = main_state.opos_token)]
     pub opos_token: AccountInfo<'info>,
 
+    /// signer pass assoicated account public key
     ///CHECK:
     #[account(
         mut,
@@ -118,6 +119,7 @@ pub struct AMintProfileByAt<'info> {
     )]
     pub user_activation_token_ata: Box<Account<'info, TokenAccount>>,
 
+    /// load mainstate account with seed for update purpose
     #[account(
         mut,
         seeds = [SEED_MAIN_STATE],
@@ -125,9 +127,11 @@ pub struct AMintProfileByAt<'info> {
     )]
     pub main_state: Box<Account<'info, MainState>>,
 
+    /// activation token public key
     #[account(mut)]
     pub activation_token: Box<Account<'info, Mint>>,
 
+    /// profile nft public key
     ///CHECK:
     #[account(
         mut,
@@ -137,6 +141,7 @@ pub struct AMintProfileByAt<'info> {
     )]
     pub profile: Box<Account<'info, Mint>>,
 
+    /// signer token assoicated account public key
     #[account(
         mut,
         associated_token::mint = profile,
@@ -144,6 +149,7 @@ pub struct AMintProfileByAt<'info> {
     )]
     pub user_profile_ata: Box<Account<'info, TokenAccount>>,
 
+    /// load profile state account public key 
     #[account(
         init,
         payer =  user,
@@ -153,6 +159,7 @@ pub struct AMintProfileByAt<'info> {
     )]
     pub profile_state: Box<Account<'info, ProfileState>>,
 
+    /// load profile metadata account public key 
     ///CHECK:
     #[account(
         mut,
@@ -166,6 +173,7 @@ pub struct AMintProfileByAt<'info> {
     )]
     pub profile_metadata: AccountInfo<'info>,
 
+    /// load profile edition account public key 
     ///CHECK:
     #[account(
         mut,
@@ -180,18 +188,7 @@ pub struct AMintProfileByAt<'info> {
     )]
     pub profile_edition: AccountInfo<'info>,
 
-    // ///CHECK:
-    // #[account(
-    //     mut,
-    //     seeds=[
-    //         METADATA.as_ref(),
-    //         MPL_ID.as_ref(),
-    //         activation_token_state.parent_profile.as_ref(),
-    //     ],
-    //     bump,
-    //     seeds::program = MPL_ID
-    // )]
-    // pub parent_profile_metadata: AccountInfo<'info>,
+    /// load parent profile state public key
     #[account(
         mut,
         seeds = [SEED_PROFILE_STATE, parent_profile.key().as_ref()],
@@ -199,10 +196,12 @@ pub struct AMintProfileByAt<'info> {
     )]
     pub parent_profile_state: Box<Account<'info, ProfileState>>,
 
+    /// collection public key
     ///CHECK: //PERF:
     #[account(mut)]
     pub collection: AccountInfo<'info>,
 
+    /// collection metadata publickey to make nft as verified nft
     ///CHECK:
     #[account(
         mut,
@@ -216,6 +215,7 @@ pub struct AMintProfileByAt<'info> {
     )]
     pub collection_metadata: AccountInfo<'info>,
 
+    /// collection edition account public key 
     ///CHECK:
     #[account(
         mut,
@@ -230,16 +230,14 @@ pub struct AMintProfileByAt<'info> {
     )]
     pub collection_edition: AccountInfo<'info>,
 
-    ///CHECK:
-    // #[account(address = ADDRESS_LOOKUP_TABLE_PROGRAM)]
-    // pub address_lookup_table_program: AccountInfo<'info>,
 
+    /// system var instruction public key
     ///CHECK:
     #[account()]
     pub sysvar_instructions: AccountInfo<'info>,
 
-    //NOTE: profile minting cost distribution account
-    // #[account(address = activation_token_state.parent_profile @ MyError::ProfileIdMissMatch)]
+
+    /// parent profile nft public key
     pub parent_profile: Box<Account<'info, Mint>>,
 
 }

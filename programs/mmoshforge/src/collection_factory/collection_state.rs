@@ -1,8 +1,11 @@
 use anchor_lang::prelude::*;
 
+/// Struct used to store collection PDA
 #[account]
 pub struct CollectionState {
+    /// gensis profile to create collection
     pub genesis_profile: Pubkey,
+    /// collection nft public key
     pub collection_id: Pubkey,
 }
 

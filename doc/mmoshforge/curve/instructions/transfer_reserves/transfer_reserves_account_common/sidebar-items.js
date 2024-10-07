@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["TransferReservesV0Common","TransferReservesV0CommonBumps"]};

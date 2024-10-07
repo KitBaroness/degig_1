@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["mint_pass_by_at"],"struct":["AMintPassByAt","AMintPassByAtBumps","MintPassByAtInput","TransferModel"]};

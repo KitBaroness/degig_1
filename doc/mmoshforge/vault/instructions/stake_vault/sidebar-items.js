@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["stake_vault"],"struct":["StakeVault","StakeVaultBumps"]};

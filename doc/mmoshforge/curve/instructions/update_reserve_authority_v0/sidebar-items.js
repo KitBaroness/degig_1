@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["handler"],"struct":["UpdateReserveAuthorityV0","UpdateReserveAuthorityV0Args","UpdateReserveAuthorityV0Bumps"]};

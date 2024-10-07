@@ -23,6 +23,7 @@ use crate::{
     other_states::LineageInfo, utils::verify_collection_item_by_main,
 };
 
+/// This is the function which used to create instruction for create collection
 pub fn create_collection(
     ctx: Context<ACreateCollection>,
     name: String,
@@ -55,9 +56,11 @@ pub fn create_collection(
 
 #[derive(Accounts)]
 pub struct ACreateCollection<'info> {
+    /// admin publickey and mandatory signer while pushing the instruction to solana
     #[account(mut, address = main_state.owner @ MyError::OnlyOwnerCanCall)]
     pub admin: Signer<'info>,
 
+    /// load project mainstate account public key
     #[account(
         mut,
         seeds = [SEED_MAIN_STATE],
@@ -65,6 +68,7 @@ pub struct ACreateCollection<'info> {
     )]
     pub main_state: Box<Account<'info, MainState>>,
 
+    /// collection public key
     #[account(
         mut,
         mint::decimals = 0,
@@ -73,6 +77,7 @@ pub struct ACreateCollection<'info> {
     )]
     pub collection: Box<Account<'info, Mint>>,
 
+    /// admin associated token account for collection
     #[account(
         mut,
         token::mint = collection,
@@ -81,6 +86,7 @@ pub struct ACreateCollection<'info> {
     )]
     pub admin_ata: Box<Account<'info, TokenAccount>>,
 
+    ///load collection state by collection public key
     #[account(
         init,
         payer = admin,
@@ -90,6 +96,7 @@ pub struct ACreateCollection<'info> {
     )]
     pub collection_state: Account<'info, CollectionState>,
 
+    ///collection nft metadata public key
     ///CHECK:
     #[account(
         mut,
@@ -103,6 +110,7 @@ pub struct ACreateCollection<'info> {
     )]
     pub collection_metadata: AccountInfo<'info>,
 
+     ///collection nft edition public key
     ///CHECK:
     #[account(
         mut,
@@ -117,6 +125,7 @@ pub struct ACreateCollection<'info> {
     )]
     pub collection_edition: AccountInfo<'info>,
 
+    ///collection nft authority public key
     ///CHECK:
     #[account(
         mut,
@@ -132,14 +141,17 @@ pub struct ACreateCollection<'info> {
     )]
     pub collection_authority_record: AccountInfo<'info>,
 
+    ///system var public key
     ///CHECK:
     #[account()]
     pub sysvar_instructions: AccountInfo<'info>,
 
+    ///parent verified collection public key
     ///CHECK:
     #[account(mut)]
     pub parent_collection: AccountInfo<'info>,
 
+    ///parent verified collection metadata public key
     ///CHECK:
     #[account(
         mut,
@@ -153,6 +165,7 @@ pub struct ACreateCollection<'info> {
     )]
     pub parent_collection_metadata: AccountInfo<'info>,
 
+    ///parent verified collection edition public key
     ///CHECK:
     #[account(
         mut,
@@ -168,11 +181,15 @@ pub struct ACreateCollection<'info> {
     pub parent_collection_edition: AccountInfo<'info>,
     
 
+    ///metaplex program public key
     ///CHECK:
     #[account(address = MPL_ID)]
     pub mpl_program: AccountInfo<'info>,
+    ///token program public key
     pub token_program: Program<'info, Token>,
+    ///associated token program public key
     pub associated_token_program: Program<'info, AssociatedToken>,
+    ///system program public key
     pub system_program: Program<'info, System>,
 }
 

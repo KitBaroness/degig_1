@@ -22,6 +22,7 @@ use crate::{
     utils::{init_ata_if_needed, verify_collection_item_by_main},
 };
 
+/// This is the function which used to create instruction for initalize activation token
 pub fn init_activation_token(
     ctx: Context<AInitActivationToken>,
     name: String,
@@ -50,11 +51,14 @@ pub fn init_activation_token(
     Ok(())
 }
 
+/// Struct used to create context while preparing instruction for initialize activation token
 #[derive(Accounts)]
 pub struct AInitActivationToken<'info> {
+    /// owner publickey and mandatory signer while pushing the instruction to solana
     #[account(mut)]
     pub user: Signer<'info>,
 
+    /// signer token assoicated account public key
     #[account(
         mut,
         token::mint = profile,
@@ -63,10 +67,12 @@ pub struct AInitActivationToken<'info> {
     )]
     pub user_profile_ata: Box<Account<'info, TokenAccount>>,
 
+    /// signer pass assoicated account public key
     ///CHECK:
     #[account(mut)]
     pub user_activation_token_ata: AccountInfo<'info>,
 
+    /// load mainstate account public key
     #[account(
         mut,
         seeds = [SEED_MAIN_STATE],
@@ -74,10 +80,12 @@ pub struct AInitActivationToken<'info> {
     )]
     pub main_state: Box<Account<'info, MainState>>,
 
+    /// activation token public key
     ///CHECK:
     #[account(mut, signer)]
     pub activation_token: AccountInfo<'info>,
 
+    /// load activiation state account public key 
     #[account(
         init,
         payer = user,
@@ -87,6 +95,7 @@ pub struct AInitActivationToken<'info> {
     )]
     pub activation_token_state: Box<Account<'info, ActivationTokenState>>,
 
+    /// load activiation metadata account public key 
     ///CHECK:
     #[account(
         mut,
@@ -100,9 +109,11 @@ pub struct AInitActivationToken<'info> {
     )]
     pub activation_token_metadata: AccountInfo<'info>,
 
+    /// profile nft public key
     #[account()]
     pub profile: Box<Account<'info, Mint>>,
 
+    /// load profile state account public key 
     #[account(
         mut,
         seeds = [SEED_PROFILE_STATE,profile.key().as_ref()],
@@ -110,6 +121,7 @@ pub struct AInitActivationToken<'info> {
     )]
     pub profile_state: Box<Account<'info, ProfileState>>,
 
+    /// load profile metadata account public key 
     ///CHECK:
     #[account(
         mut,
@@ -123,6 +135,7 @@ pub struct AInitActivationToken<'info> {
     )]
     pub profile_metadata: AccountInfo<'info>,
 
+    /// load profile edition account public key 
     ///CHECK:
     #[account(
         mut,
@@ -137,6 +150,7 @@ pub struct AInitActivationToken<'info> {
     )]
     pub profile_edition: AccountInfo<'info>,
 
+    /// load profile collection authority public key 
     ///CHECK:
     #[account(
         mut,
@@ -152,10 +166,12 @@ pub struct AInitActivationToken<'info> {
     )]
     pub profile_collection_authority_record: AccountInfo<'info>,
 
+    /// collection nft to make nft as verified nft
     ///CHECK:
     #[account(mut)]
     pub parent_collection: AccountInfo<'info>,
 
+    /// collection metadata publickey to make nft as verified nft
     ///CHECK:
     #[account(
         mut,
@@ -169,6 +185,7 @@ pub struct AInitActivationToken<'info> {
     )]
     pub parent_collection_metadata: AccountInfo<'info>,
 
+    /// load parent collection edition account public key 
     ///CHECK:
     #[account(
         mut,
@@ -184,15 +201,20 @@ pub struct AInitActivationToken<'info> {
     pub parent_collection_edition: AccountInfo<'info>,
     
 
+    /// system var instruction public key
     ///CHECK:
     #[account()]
     pub sysvar_instructions: AccountInfo<'info>,
 
+    /// mpl program public key
     ///CHECK:
     #[account(address = MPL_ID)]
     pub mpl_program: AccountInfo<'info>,
+    /// associated token program public key
     pub associated_token_program: Program<'info, AssociatedToken>,
+    /// token program public key
     pub token_program: Program<'info, Token>,
+    /// sytem program public key
     pub system_program: Program<'info, System>,
 }
 

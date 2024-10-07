@@ -32,15 +32,7 @@ use crate::{
     },
 };
 
-#[derive(AnchorSerialize, AnchorDeserialize, Default, Clone)]
-pub struct MintProfileByAtInput {
-    pub name: String,
-    pub symbol: String,
-    // pub uri: String,
-    pub uri_hash: String,
-}
-
-///MINT FakeID by activation_token
+/// This is the function used to update profile nft 
 pub fn update_profile(
     ctx: Context<AUpdateMint>,
     name: Box<String>,
@@ -59,6 +51,7 @@ pub fn update_profile(
 
 
 
+/// Struct used to create context while preparing instruction for update profile
 #[derive(Accounts)]
 #[instruction(
     name: Box<String>,
@@ -66,22 +59,28 @@ pub fn update_profile(
     uri: Box<String>,
 )]
 pub struct AUpdateMint<'info> {
+    /// user publickey and mandatory signer while pushing the instruction to solana
     #[account(mut)]
     pub user: Signer<'info>,
 
+    /// mpl program public key
     ///CHECK:
     #[account(address = MPL_ID)]
     pub mpl_program: AccountInfo<'info>,
+    /// token program public key
     pub token_program: Program<'info, Token>,
+    /// associated token program public key
     pub associated_token_program: Program<'info, AssociatedToken>,
+    /// sytem program public key
     pub system_program: Program<'info, System>,
 
+    /// profile nft public key
     #[account(
         mut,
     )]
     pub mint: Box<Account<'info, Mint>>,
 
-
+    /// load mainstate account by public key
     #[account(
         mut,
         seeds = [SEED_MAIN_STATE],
@@ -89,6 +88,7 @@ pub struct AUpdateMint<'info> {
     )]
     pub main_state: Box<Account<'info, MainState>>,
 
+    /// profile metadata public key
     ///CHECK:
     #[account(
         mut,
@@ -102,6 +102,7 @@ pub struct AUpdateMint<'info> {
     )]
     pub metadata: AccountInfo<'info>,
 
+    /// system var instruction public key
     ///CHECK:
     #[account()]
     pub sysvar_instructions: AccountInfo<'info>,

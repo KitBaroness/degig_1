@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["handler"],"struct":["TransferReservesV0","TransferReservesV0Bumps"]};

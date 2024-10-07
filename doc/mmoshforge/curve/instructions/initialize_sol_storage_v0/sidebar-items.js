@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["handler"],"struct":["InitializeSolStorageV0","InitializeSolStorageV0Args","InitializeSolStorageV0Bumps"]};
