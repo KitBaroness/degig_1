@@ -52,11 +52,6 @@ pub mod mmoshforge {
         Ok(())
     }
 
-    pub fn set_common_lut(ctx: Context<AUpdateMainState>, lut: Pubkey) -> Result<()> {
-        ctx.accounts.main_state.common_lut = lut;
-        Ok(())
-    }
-
     pub fn create_collection(
         ctx: Context<ACreateCollection>,
         name: String,

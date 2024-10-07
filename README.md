@@ -36,29 +36,28 @@
 
 | No | Function | Description | Documentation |
 | :--- | :--- | :--- | :--- |
-| `1` | `init_main_state` | `Create new PDA account to manage profile nft` | [link](https://github.com/mmosh-pit/mmosh-smart-contract/blob/dev/doc/mmoshforge/_main/instructions/init_main_state/index.html) |
-| `2` | `update_main_state` | `Update cost and share of profile PDA account` | `test` |
-| `3` | `update_main_state_owner` | `Tranfser PDA account ownership` | `test` |
-| `4` | `set_common_lut` | `Set common LUT function which used to reduce public key size while minting new profile nft` | `test` |
-| `5` | `create_collection` | `Create new collection for profile and pass` | `test` |
-| `6` | `mint_gensis_profile` | `Create new gensis profile nft` | `test` |
-| `7` | `mint_profile_by_at` | `Create new profile nft` | `test` |
-| `8` | `update_profile` | `update profile nft metadata, name and symbol` | `test` |
-| `9` | `mint_gensis_pass` | `mint gensis pass along with new PDA account` | `test` |
-| `10` | `mint_pass_by_at` | `mint pass nft` | `test` |
-| `11` | `mint_guest_pass` | `mint new guest pass nft` | `test` |
-| `12` | `init_activation_token` | `Create new activation token account` | `test` |
-| `13` | `mint_activation_token` | `Mint new activation token from profile nft` | `test` |
-| `14` | `init_pass_token` | `Create new pass activation token account` | `test` |
-| `15` | `create_pass_token` | `Mint new pass activation token nft` | `test` |
-| `16` | `initialize_sol_storage_v0` | `Create new storage account for bonding curve` | `test` |
-| `17` | `create_curve_v0` | `Create new curve account` | `test` |
-| `18` | `initialize_token_bonding_v0` | `Intialize token bonding account` | `test` |
-| `19` | `sell_v1` | `Burn memecoin to get token back from bonding curve` | `test` |
-| `20` | `buy_v1` | `Mint memecoin to lock token into bonding curve` | `test` |
-| `21` | `init_vault` | `Intialize new vault account` | `test` |
-| `22` | `stake_vault` | `stake value into vault account` | `test` |
-| `23` | `unstake_vault` | `unstake value from vault account` | `test` |
+| `1` | `init_main_state` | `Create new PDA account to manage profile nft` | [link](https://htmlpreview.github.io/?https://github.com/mmosh-pit/mmosh-smart-contract/blob/dev/doc/mmoshforge/_main/instructions/init_main_state/index.html) |
+| `2` | `update_main_state` | `Update cost and share of profile PDA account` | [link](https://htmlpreview.github.io/?https://github.com/mmosh-pit/mmosh-smart-contract/blob/dev/doc/mmoshforge/_main/instructions/update_main_state/index.html |
+| `3` | `update_main_state_owner` | `Tranfser PDA account ownership` | [link](https://htmlpreview.github.io/?https://github.com/mmosh-pit/mmosh-smart-contract/blob/dev/doc/mmoshforge/_main/instructions/update_main_state_owner/index.html |
+| `4` | `create_collection` | `Create new collection for profile and pass` | [link](https://htmlpreview.github.io/?https://github.com/mmosh-pit/mmosh-smart-contract/blob/dev/doc/mmoshforge/collection_factory/instructions/create_collection/index.html |
+| `6` | `mint_gensis_profile` | `Create new gensis profile nft` | [link](https://htmlpreview.github.io/?https://github.com/mmosh-pit/mmosh-smart-contract/blob/dev/doc/mmoshforge/profile/instructions/mint_genesis_profile/index.html |
+| `7` | `mint_profile_by_at` | `Create new profile nft` | [link](https://htmlpreview.github.io/?https://github.com/mmosh-pit/mmosh-smart-contract/blob/dev/doc/mmoshforge/profile/instructions/mint_profile_by_at/index.html |
+| `8` | `update_profile` | `update profile nft metadata, name and symbol` | [link](https://htmlpreview.github.io/?https://github.com/mmosh-pit/mmosh-smart-contract/blob/dev/doc/mmoshforge/profile/instructions/update_profile/index.html |
+| `9` | `mint_gensis_pass` | `mint gensis pass along with new PDA account` | [link](https://htmlpreview.github.io/?https://github.com/mmosh-pit/mmosh-smart-contract/blob/dev/doc/mmoshforge/profile/instructions/mint_gensis_pass/index.html |
+| `10` | `mint_pass_by_at` | `mint pass nft` | [link](https://htmlpreview.github.io/?https://github.com/mmosh-pit/mmosh-smart-contract/blob/dev/doc/mmoshforge/profile/instructions/mint_pass_by_at/index.html |
+| `11` | `mint_guest_pass` | `mint new guest pass nft` | [link](https://htmlpreview.github.io/?https://github.com/mmosh-pit/mmosh-smart-contract/blob/dev/doc/mmoshforge/profile/instructions/mint_guest_pass/index.html |
+| `12` | `init_activation_token` | `Create new activation token account` | [link](https://htmlpreview.github.io/?https://github.com/mmosh-pit/mmosh-smart-contract/blob/dev/doc/mmoshforge/activation_token/instructions/init_activation_token/index.html  |
+| `13` | `mint_activation_token` | `Mint new activation token from profile nft` | [link](https://htmlpreview.github.io/?https://github.com/mmosh-pit/mmosh-smart-contract/blob/dev/doc/mmoshforge/activation_token/instructions/mint_activation_token/index.html |
+| `14` | `init_pass_token` | `Create new pass activation token account` | [link](https://htmlpreview.github.io/?https://github.com/mmosh-pit/mmosh-smart-contract/blob/dev/doc/mmoshforge/activation_token/instructions/init_pass_token/index.html |
+| `15` | `create_pass_token` | `Mint new pass activation token nft` | [link](https://htmlpreview.github.io/?https://github.com/mmosh-pit/mmosh-smart-contract/blob/dev/doc/mmoshforge/activation_token/instructions/create_pass_token/index.html |
+| `16` | `initialize_sol_storage_v0` | `Create new storage account for bonding curve` | [link](https://htmlpreview.github.io/?https://github.com/mmosh-pit/mmosh-smart-contract/blob/dev/doc/mmoshforge/curve/instructions/initialize_sol_storage_v0/index.html |
+| `17` | `create_curve_v0` | `Create new curve account` | [link](https://htmlpreview.github.io/?https://github.com/mmosh-pit/mmosh-smart-contract/blob/dev/doc/mmoshforge/curve/instructions/create_curve_v0/index.html |
+| `18` | `initialize_token_bonding_v0` | `Intialize token bonding account` | [link](https://htmlpreview.github.io/?https://github.com/mmosh-pit/mmosh-smart-contract/blob/dev/doc/mmoshforge/curve/instructions/initialize_token_bonding_v0/index.html |
+| `19` | `sell_v1` | `Burn memecoin to get token back from bonding curve` | [link](https://htmlpreview.github.io/?https://github.com/mmosh-pit/mmosh-smart-contract/blob/dev/doc/mmoshforge/curve/instructions/sell/sell_v1/index.html |
+| `20` | `buy_v1` | `Mint memecoin to lock token into bonding curve` | [link](https://htmlpreview.github.io/?https://github.com/mmosh-pit/mmosh-smart-contract/blob/dev/doc/mmoshforge/curve/instructions/buy/buy_v1/index.html |
+| `21` | `init_vault` | `Intialize new vault account` | [link](https://htmlpreview.github.io/?https://github.com/mmosh-pit/mmosh-smart-contract/blob/dev/doc/mmoshforge/vault/instructions/init_vault/index.html |
+| `22` | `stake_vault` | `stake value into vault account` | [link](https://htmlpreview.github.io/?https://github.com/mmosh-pit/mmosh-smart-contract/blob/dev/doc/mmoshforge/vault/instructions/stake_vault/index.html |
+| `23` | `unstake_vault` | `unstake value from vault account` | [link](https://htmlpreview.github.io/?https://github.com/mmosh-pit/mmosh-smart-contract/blob/dev/doc/mmoshforge/vault/instructions/unstake_vault/index.html |
 
 
 ## LICENSE
