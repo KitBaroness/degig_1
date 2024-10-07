@@ -1,4 +1,4 @@
-# MMOSH Smart Contract
+# MMOSH Protocol
 
 ## Software requirement
 1. ubuntu 22.04 or mac os
