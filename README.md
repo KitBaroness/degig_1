@@ -35,7 +35,7 @@
 ## Smart contract functions
 
 | No | Function | Description | Documentation |
-| :--- | :--- | :--- |
+| :--- | :--- | :--- | :--- |
 | `1` | `init_main_state` | `Create new PDA account to manage profile nft` | [link](https://github.com/mmosh-pit/mmosh-smart-contract/blob/dev/doc/mmoshforge/_main/instructions/init_main_state/index.html) |
 | `2` | `update_main_state` | `Update cost and share of profile PDA account` | `test` |
 | `3` | `update_main_state_owner` | `Tranfser PDA account ownership` | `test` |
