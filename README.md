@@ -36,7 +36,7 @@
 
 | No | Function | Description |
 | :--- | :--- | :--- |
-| `1` | `init_main_state` | `Create new PDA account to manage profile nft [a link](www.google.com)` | 
+| `1` | `init_main_state` | `Create new PDA account to manage profile nft [here](myLib/README.md)` | 
 | `2` | `update_main_state` | `Update cost and share of profile PDA account` | 
 | `3` | `update_main_state_owner` | `Tranfser PDA account ownership` | 
 | `4` | `set_common_lut` | `Set common LUT function which used to reduce public key size while minting new profile nft` | 
