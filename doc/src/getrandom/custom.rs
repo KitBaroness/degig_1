@@ -144,7 +144,7 @@
 /// register a function in a non-root crate will result in a linker error.
 /// This is similar to
 /// [`#[panic_handler]`](https://doc.rust-lang.org/nomicon/panic-handler.html) or
-/// [`#[global_allocator]`](https://doc.rust-lang.org/edition-guide/rust-2018/platform-and-target-support/global-allocators.html),
+/// [`#[global_allocator]`](https://doc.rust-lang.org/edition-guide/rust-2018/platform-and-target-support/global-allocators),
 /// where helper crates define handlers/allocators but only the binary crate
 /// actually _uses_ the functionality.
 ///

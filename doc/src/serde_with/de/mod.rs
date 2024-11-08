@@ -305,7 +305,7 @@
     ///
     /// The function signature is compatible with [serde's `with` annotation][with-annotation].
     ///
-    /// [with-annotation]: https://serde.rs/field-attrs.html#with
+    /// [with-annotation]: https://serde.rs/field-attrs#with
     </span><span class="kw">pub fn </span>deserialize&lt;<span class="lifetime">'de</span>, D, I&gt;(deserializer: D) -&gt; <span class="prelude-ty">Result</span>&lt;I, D::Error&gt;
     <span class="kw">where
         </span>T: DeserializeAs&lt;<span class="lifetime">'de</span>, I&gt;,

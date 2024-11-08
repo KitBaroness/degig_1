@@ -1314,7 +1314,7 @@
 
         <span class="comment">// Since libsecp256k1 is still using the old version of rand, this test
         // copies the `random` implementation at:
-        // https://docs.rs/libsecp256k1/latest/src/libsecp256k1/lib.rs.html#430
+        // https://docs.rs/libsecp256k1/latest/src/libsecp256k1/lib.rs#430
         </span><span class="kw">let </span>secret_key = {
             <span class="kw">use </span>rand::RngCore;
             <span class="kw">let </span><span class="kw-2">mut </span>rng = rand::thread_rng();

@@ -2801,7 +2801,7 @@
 //! [skip_serializing_none]: https://docs.rs/serde_with/3.8.0/serde_with/attr.skip_serializing_none.html
 //! [StringWithSeparator]: https://docs.rs/serde_with/3.8.0/serde_with/struct.StringWithSeparator.html
 //! [user guide]: https://docs.rs/serde_with/3.8.0/serde_with/guide/index.html
-//! [with-annotation]: https://serde.rs/field-attrs.html#with
+//! [with-annotation]: https://serde.rs/field-attrs#with
 //! [as-annotation]: https://docs.rs/serde_with/3.8.0/serde_with/guide/serde_as/index.html
 
 </span><span class="attr">#[cfg(feature = <span class="string">"alloc"</span>)]

@@ -326,7 +326,7 @@
 /// The various modules in here are intended to be used with serde's [`with` annotation] to
 /// serialize as something other than the default ISO 8601 format.
 ///
-/// [`with` annotation]: https://serde.rs/field-attrs.html#with
+/// [`with` annotation]: https://serde.rs/field-attrs#with
 </span><span class="attr">#[cfg(feature = <span class="string">"serde"</span>)]
 </span><span class="kw">pub mod </span>serde {
     <span class="kw">pub use </span><span class="kw">super</span>::datetime::serde::<span class="kw-2">*</span>;

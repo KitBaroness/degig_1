@@ -3907,7 +3907,7 @@
     /// Windows Server 2012+.](https://docs.microsoft.com/en-us/windows/win32/winsock/ipproto-ip-socket-options)
     ///
     /// [`set_tos`]: Self::set_tos
-    </span><span class="comment">// https://docs.rs/socket2/0.5.3/src/socket2/socket.rs.html#1464
+    </span><span class="comment">// https://docs.rs/socket2/0.5.3/src/socket2/socket.rs#1464
     </span><span class="attr">#[cfg(not(any(
         target_os = <span class="string">"fuchsia"</span>,
         target_os = <span class="string">"redox"</span>,
@@ -3934,7 +3934,7 @@
     ///
     /// **NOTE:** On Windows, `IP_TOS` is only supported on [Windows 8+ or
     /// Windows Server 2012+.](https://docs.microsoft.com/en-us/windows/win32/winsock/ipproto-ip-socket-options)
-    </span><span class="comment">// https://docs.rs/socket2/0.5.3/src/socket2/socket.rs.html#1446
+    </span><span class="comment">// https://docs.rs/socket2/0.5.3/src/socket2/socket.rs#1446
     </span><span class="attr">#[cfg(not(any(
         target_os = <span class="string">"fuchsia"</span>,
         target_os = <span class="string">"redox"</span>,

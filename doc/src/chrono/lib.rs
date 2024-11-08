@@ -1338,9 +1338,9 @@
 /// *Available on crate feature 'serde' only.*
 ///
 /// [RFC 3339]: https://tools.ietf.org/html/rfc3339
-/// [`with` annotation]: https://serde.rs/field-attrs.html#with
-/// [`serialize_with`]: https://serde.rs/field-attrs.html#serialize_with
-/// [`deserialize_with`]: https://serde.rs/field-attrs.html#deserialize_with
+/// [`with` annotation]: https://serde.rs/field-attrs#with
+/// [`serialize_with`]: https://serde.rs/field-attrs#serialize_with
+/// [`deserialize_with`]: https://serde.rs/field-attrs#deserialize_with
 </span><span class="attr">#[cfg(feature = <span class="string">"serde"</span>)]
 </span><span class="kw">pub mod </span>serde {
     <span class="kw">use </span>core::fmt;

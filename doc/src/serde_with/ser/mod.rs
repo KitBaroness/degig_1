@@ -334,7 +334,7 @@
     ///
     /// The function signature is compatible with [serde's `with` annotation][with-annotation].
     ///
-    /// [with-annotation]: https://serde.rs/field-attrs.html#with
+    /// [with-annotation]: https://serde.rs/field-attrs#with
     </span><span class="kw">pub fn </span>serialize&lt;S, I&gt;(value: <span class="kw-2">&amp;</span>I, serializer: S) -&gt; <span class="prelude-ty">Result</span>&lt;S::Ok, S::Error&gt;
     <span class="kw">where
         </span>S: Serializer,

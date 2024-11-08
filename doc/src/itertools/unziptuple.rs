@@ -122,8 +122,8 @@
                 <span class="comment">// This implementation mirrors the logic of Iterator::unzip resp. Extend for (A, B) as close as possible.
                 // Unfortunately a lot of the used api there is still unstable (https://github.com/rust-lang/rust/issues/72631).
                 //
-                // Iterator::unzip: https://doc.rust-lang.org/src/core/iter/traits/iterator.rs.html#2825-2865
-                // Extend for (A, B): https://doc.rust-lang.org/src/core/iter/traits/collect.rs.html#370-411
+                // Iterator::unzip: https://doc.rust-lang.org/src/core/iter/traits/iterator.rs#2825-2865
+                // Extend for (A, B): https://doc.rust-lang.org/src/core/iter/traits/collect.rs#370-411
 
                 </span><span class="kw">let </span><span class="kw-2">mut </span>res = ($(<span class="macro-nonterminal">$FromT::default</span>(),)<span class="kw-2">*</span>);
                 <span class="kw">let </span>($(<span class="macro-nonterminal">$FromT</span>,)<span class="kw-2">*</span>) = <span class="kw-2">&amp;mut </span>res;

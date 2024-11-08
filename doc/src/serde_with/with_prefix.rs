@@ -702,7 +702,7 @@
 /// }
 /// ```
 ///
-/// [`deny_unknown_fields`]: https://serde.rs/container-attrs.html#deny_unknown_fields
+/// [`deny_unknown_fields`]: https://serde.rs/container-attrs#deny_unknown_fields
 /// [issue-with_prefix-deny_unknown_fields]: https://github.com/jonasbb/serde_with/issues/57
 </span><span class="attr">#[macro_export]
 </span><span class="macro">macro_rules!</span> with_prefix {
